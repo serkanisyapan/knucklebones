@@ -1,13 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Dice } from '../components/Dice'
-import { PlayerBoard } from '../components/PlayerBoard';
+import { Game } from '../components/Game'
 ---
 
 <Layout title="Knucklebones">
 	<main>
 		<h1 class="text-3xl text-white">Play Knucklebones!</h1>
-		<Dice client:load/>
-		<PlayerBoard client:load/>
+		<Game client:load/>
 	</main>
 </Layout>
