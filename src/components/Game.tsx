@@ -1,20 +1,13 @@
 import { useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
+import { pickRandomDiceNumber, rollFirstDice } from "../helpers/rollDice";
 
 export const Game = () => {
   const [dice, setDice] = useState<number>(rollFirstDice());
 
-  function pickRandomDieNumber() {
-    return Math.floor(Math.random() * 5) + 1;
-  }
-
-  function rollFirstDice() {
-    return pickRandomDieNumber();
-  }
-
   function rollAfterPlacing() {
-    const rollDice = pickRandomDieNumber();
+    const rollDice = pickRandomDiceNumber();
     setDice(rollDice);
   }
 

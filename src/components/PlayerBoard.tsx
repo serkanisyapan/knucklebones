@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Dice } from "./Dice";
+import { calcPlayerScore, calcColDiceSum } from "../helpers/diceCalculations";
 
 interface PlayerBoard {
   diceNumber: number;
@@ -30,7 +31,7 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
             ...b,
             dices: [...b.dices, diceNumber],
           };
-          const updatedScore = calcDiceSum(updatedBoard.dices);
+          const updatedScore = calcColDiceSum(updatedBoard.dices);
           return {
             ...updatedBoard,
             score: updatedScore,
@@ -42,36 +43,11 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
     rollDice();
   }
 
-  function calcDiceSum(dices: number[]) {
-    let sumDice = 0;
-    if (dices[0] === dices[1] && dices[0] === dices[2]) {
-      sumDice += dices[0] * 9;
-      return sumDice;
-    } else {
-      for (let i = 0; i < dices.length; i++) {
-        if (dices[i] === dices[i + 1]) {
-          sumDice += dices[i] * 2 + dices[i];
-        } else {
-          sumDice += dices[i];
-        }
-      }
-    }
-    return sumDice;
-  }
-
-  function calcPlayerScore(playerBoard: BoardState[]) {
-    let playerScore = 0;
-    for (let a of playerBoard) {
-      playerScore += a.score;
-    }
-    return playerScore;
-  }
-
   return (
     <div className="text-white flex flex-row">
       {board.map((col, index) => {
         const { dices } = col;
-        const getDiceSum = calcDiceSum(dices);
+        const getDiceSum = calcColDiceSum(dices);
         return (
           <div key={index} className="flex flex-col items-center">
             <span>{getDiceSum || 0}</span>
