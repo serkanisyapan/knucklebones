@@ -11,6 +11,7 @@ interface BoardState {
 
 function calcColDiceSum(dices: Dice[]) {
   let sumDice = 0;
+
   if (
     dices.length === 3 &&
     dices[0]?.die === dices[1]?.die &&
@@ -19,8 +20,13 @@ function calcColDiceSum(dices: Dice[]) {
     sumDice += dices[0].die * 9;
     return sumDice;
   }
+
   for (let i = 0; i < dices.length; i++) {
-    if (i < dices.length - 1 && dices[i].die === dices[i + 1]?.die) {
+    if (
+      i < dices.length - 1 &&
+      (dices[i].die === dices[i + 1]?.die ||
+        dices[i]?.die === dices[i + 2]?.die)
+    ) {
       sumDice += dices[i].die * 2 + dices[i].die;
     } else {
       sumDice += dices[i].die;
