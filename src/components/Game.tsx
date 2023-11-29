@@ -13,7 +13,7 @@ export const Game = () => {
 
   return (
     <div>
-      <Dice diceNumber={dice} />
+      <Dice diceNumber={dice} diceColor="bg-emerald-500" />
       <PlayerBoard rollDice={rollAfterPlacing} diceNumber={dice} />
     </div>
   );

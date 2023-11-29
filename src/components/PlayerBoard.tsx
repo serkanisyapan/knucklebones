@@ -1,16 +1,25 @@
 import { useState } from "react";
 import { Dice } from "./Dice";
-import { calcPlayerScore, calcColDiceSum } from "../helpers/diceCalculations";
+import {
+  calcPlayerScore,
+  calcColDiceSum,
+  checkDiceColor,
+} from "../helpers/diceCalculations";
 
 interface PlayerBoard {
   diceNumber: number;
   rollDice: () => void;
 }
 
+interface Dice {
+  color: string;
+  die: number;
+}
+
 interface BoardState {
   id: number;
   score: number;
-  dices: number[];
+  dices: Dice[];
 }
 
 const initialState: BoardState[] = [
@@ -29,12 +38,14 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
         if (b.id === col.id && b.dices.length < 3) {
           const updatedBoard = {
             ...b,
-            dices: [...b.dices, diceNumber],
+            dices: [...b.dices, { color: "bg-emerald-500", die: diceNumber }],
           };
           const updatedScore = calcColDiceSum(updatedBoard.dices);
+          const updatedDiceColors = checkDiceColor(updatedBoard.dices);
           return {
             ...updatedBoard,
             score: updatedScore,
+            dices: updatedDiceColors,
           };
         }
         return b;
@@ -62,7 +73,7 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
               key={index}
             >
               {dices.map((dice, idx) => (
-                <Dice key={idx} diceNumber={dice} />
+                <Dice key={idx} diceNumber={dice.die} diceColor={dice.color} />
               ))}
             </div>
           </div>

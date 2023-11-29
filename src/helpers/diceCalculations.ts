@@ -1,21 +1,29 @@
+interface Dice {
+  color: string;
+  die: number;
+}
+
 interface BoardState {
   id: number;
   score: number;
-  dices: number[];
+  dices: Dice[];
 }
 
-function calcColDiceSum(dices: number[]) {
+function calcColDiceSum(dices: Dice[]) {
   let sumDice = 0;
-  if (dices[0] === dices[1] && dices[0] === dices[2]) {
-    sumDice += dices[0] * 9;
+  if (
+    dices.length === 3 &&
+    dices[0]?.die === dices[1]?.die &&
+    dices[0]?.die === dices[2]?.die
+  ) {
+    sumDice += dices[0].die * 9;
     return sumDice;
-  } else {
-    for (let i = 0; i < dices.length; i++) {
-      if (dices[i] === dices[i + 1]) {
-        sumDice += dices[i] * 2 + dices[i];
-      } else {
-        sumDice += dices[i];
-      }
+  }
+  for (let i = 0; i < dices.length; i++) {
+    if (i < dices.length - 1 && dices[i].die === dices[i + 1]?.die) {
+      sumDice += dices[i].die * 2 + dices[i].die;
+    } else {
+      sumDice += dices[i].die;
     }
   }
   return sumDice;
@@ -29,4 +37,26 @@ function calcPlayerScore(playerBoard: BoardState[]) {
   return playerScore;
 }
 
-export { calcColDiceSum, calcPlayerScore };
+function checkDiceColor(dices: Dice[]) {
+  const areAllDicesEqual = dices.every((dice) => {
+    if (dices.length === 3) return dice.die === dices[0].die;
+  });
+
+  const findDuplicateDice = dices.find(
+    (dice) => dices.filter((d) => d.die === dice.die).length === 2
+  );
+
+  const updatedDiceColors = dices.map((dice) => {
+    if (areAllDicesEqual) return { ...dice, color: "bg-red-500" };
+    if (findDuplicateDice)
+      return {
+        ...dice,
+        color:
+          dice.die === findDuplicateDice.die ? "bg-blue-500" : "bg-emerald-500",
+      };
+    return dice;
+  });
+  return updatedDiceColors;
+}
+
+export { calcColDiceSum, calcPlayerScore, checkDiceColor };
