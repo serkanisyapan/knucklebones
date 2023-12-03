@@ -38,7 +38,7 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
         if (b.id === col.id && b.dices.length < 3) {
           const updatedBoard = {
             ...b,
-            dices: [...b.dices, { color: "bg-emerald-500", die: diceNumber }],
+            dices: [...b.dices, { color: "bg-[#f2ebcf]", die: diceNumber }],
           };
           const updatedScore = calcColDiceSum(updatedBoard.dices);
           const updatedDiceColors = checkDiceColor(updatedBoard.dices);
@@ -54,32 +54,45 @@ export const PlayerBoard = ({ diceNumber, rollDice }: PlayerBoard) => {
     rollDice();
   }
 
+  function boardCornersRounded(index: number) {
+    if (index === 0) return "rounded-tl-md rounded-bl-md";
+    if (index === 2) return "rounded-tr-md rounded-br-md";
+  }
+
   return (
-    <div className="text-white flex flex-row">
+    <div className="text-white flex flex-row justify-center mb-5">
       {board.map((col, index) => {
         const { dices } = col;
         const getDiceSum = calcColDiceSum(dices);
+        const boardCorners = boardCornersRounded(index);
         return (
           <div key={index} className="flex flex-col items-center">
-            <span>{getDiceSum || 0}</span>
+            <span className="text-xl">{getDiceSum || 0}</span>
             <div
               onClick={() => {
                 if (dices.length === 3) return;
                 placeDiceToBoard(col);
               }}
-              className={`bg-slate-500 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 ${
+              className={`bg-slate-700 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 justify-center ${
                 dices.length < 3 && "hover:bg-slate-600 hover:cursor-pointer"
-              } `}
+              } ${boardCorners}`}
               key={index}
             >
               {dices.map((dice, idx) => (
-                <Dice key={idx} diceNumber={dice.die} diceColor={dice.color} />
+                <Dice
+                  key={idx}
+                  diceNumber={dice.die}
+                  diceColor={dice.color}
+                  isRollingDice={false}
+                />
               ))}
             </div>
           </div>
         );
       })}
-      <span>{playerScore}</span>
+      <div className="w-[110px] self-center ml-5 text-xl">
+        Score: {playerScore}
+      </div>
     </div>
   );
 };

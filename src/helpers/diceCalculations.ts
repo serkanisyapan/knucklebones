@@ -53,12 +53,12 @@ function checkDiceColor(dices: Dice[]) {
   );
 
   const updatedDiceColors = dices.map((dice) => {
-    if (areAllDicesEqual) return { ...dice, color: "bg-red-500" };
+    if (areAllDicesEqual) return { ...dice, color: "bg-[#6ba6c6]" };
     if (findDuplicateDice)
       return {
         ...dice,
         color:
-          dice.die === findDuplicateDice.die ? "bg-blue-500" : "bg-emerald-500",
+          dice.die === findDuplicateDice.die ? "bg-[#c9b96f]" : "bg-[#f2ebcf]",
       };
     return dice;
   });

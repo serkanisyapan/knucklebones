@@ -12,8 +12,8 @@ export const Game = () => {
   }
 
   return (
-    <div>
-      <Dice diceNumber={dice} diceColor="bg-emerald-500" />
+    <div className="flex flex-row items-center gap-10">
+      <Dice diceNumber={dice} diceColor="bg-[#f2ebcf]" isRollingDice={true} />
       <PlayerBoard rollDice={rollAfterPlacing} diceNumber={dice} />
     </div>
   );
