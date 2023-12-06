@@ -7,6 +7,7 @@ import {
   updateDiceScoreAndColor,
 } from "../helpers/diceCalculations";
 import type { BoardState, Player } from "../types/GameTypes";
+import { checkWinningCondition } from "../helpers/checkWinningCondition";
 
 const playerBoard: BoardState[] = [
   { id: 0, score: 0, dices: [] },
@@ -21,6 +22,7 @@ export const Game = () => {
     { id: 2, playerName: "Player 2", board: playerBoard },
   ]);
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
+  const checkWinner = checkWinningCondition(players);
 
   function rollDice() {
     const rollDice = pickRandomDiceNumber();
@@ -28,6 +30,7 @@ export const Game = () => {
   }
 
   function placeDiceToBoard(col: BoardState, playerId: number) {
+    if (checkWinner) return;
     // @ts-ignore
     setPlayers((players) => {
       const updatedPlayers = players.map((player) => {
@@ -60,10 +63,18 @@ export const Game = () => {
   return (
     <div>
       <p className="text-white text-lg text-center mb-5">
-        Player {playerTurn}'s Turn
+        {checkWinner ? checkWinner : `Player ${playerTurn}'s Turn`}
       </p>
       <div className="flex flex-row items-center gap-10">
-        <Dice diceNumber={dice} diceColor="bg-[#f2ebcf]" isRollingDice={true} />
+        {checkWinner ? (
+          <div className="w-16 h-16"></div>
+        ) : (
+          <Dice
+            diceColor="bg-[#f2ebcf]"
+            diceNumber={dice}
+            isRollingDice={true}
+          />
+        )}
         {players.map((player) => {
           return (
             <PlayerBoard
