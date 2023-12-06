@@ -1,13 +1,4 @@
-interface Dice {
-  color: string;
-  die: number;
-}
-
-interface BoardState {
-  id: number;
-  score: number;
-  dices: Dice[];
-}
+import type { Dice, BoardState, Player } from "../types/GameTypes";
 
 function calcColDiceSum(dices: Dice[]) {
   let sumDice = 0;
@@ -65,4 +56,32 @@ function checkDiceColor(dices: Dice[]) {
   return updatedDiceColors;
 }
 
-export { calcColDiceSum, calcPlayerScore, checkDiceColor };
+function destroyOpponentDice(
+  playerId: number,
+  players: Player[],
+  colId: number,
+  dice: number
+) {
+  const opponentId = playerId === 1 ? 2 : 1;
+  const opponentColumn = players.find((player) => player.id === opponentId)
+    ?.board[colId];
+  if (!opponentColumn) return;
+  const destroyDices = opponentColumn.dices.filter((die) => die.die !== dice);
+  const updateOpponent = { ...opponentColumn, dices: destroyDices };
+  const updateScoreAndColor = updateDiceScoreAndColor(updateOpponent.dices);
+  return { ...opponentColumn, ...updateScoreAndColor };
+}
+
+function updateDiceScoreAndColor(dices: Dice[]) {
+  const updateScore = calcColDiceSum(dices);
+  const updateDiceColors = checkDiceColor(dices);
+  return { score: updateScore, dices: updateDiceColors };
+}
+
+export {
+  calcColDiceSum,
+  calcPlayerScore,
+  checkDiceColor,
+  destroyOpponentDice,
+  updateDiceScoreAndColor,
+};

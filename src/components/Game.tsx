@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
 import { pickRandomDiceNumber, rollFirstDice } from "../helpers/rollDice";
-import { calcColDiceSum, checkDiceColor } from "../helpers/diceCalculations";
+import {
+  destroyOpponentDice,
+  updateDiceScoreAndColor,
+} from "../helpers/diceCalculations";
 import type { BoardState, Player } from "../types/GameTypes";
 
 const playerBoard: BoardState[] = [
@@ -25,30 +28,32 @@ export const Game = () => {
   }
 
   function placeDiceToBoard(col: BoardState, playerId: number) {
+    // @ts-ignore
     setPlayers((players) => {
       const updatedPlayers = players.map((player) => {
-        if (player.id === playerId) {
-          const updatedBoard = player.board.map((column) => {
-            if (column.id === col.id) {
+        const updatedBoard = player.board.map((column) => {
+          if (column.id === col.id) {
+            if (player.id === playerId) {
               const updatedDices = [
                 ...column.dices,
                 { color: "bg-[#f2ebcf]", die: dice },
               ];
-              const updateScore = calcColDiceSum(updatedDices);
-              const updateDiceColors = checkDiceColor(updatedDices);
-              return { ...column, score: updateScore, dices: updateDiceColors };
+              const updateScoreAndColor = updateDiceScoreAndColor(updatedDices);
+              return { ...column, ...updateScoreAndColor };
             }
-            return column;
-          });
-          return { ...player, board: updatedBoard };
-        }
-        return player;
+            return destroyOpponentDice(playerId, players, column.id, dice);
+          }
+          return column;
+        });
+        return { ...player, board: updatedBoard };
       });
       return updatedPlayers;
     });
+
     setPlayerTurn((prevPlayer) =>
       prevPlayer === players[0].id ? players[1].id : players[0].id
     );
+
     rollDice();
   }
 
