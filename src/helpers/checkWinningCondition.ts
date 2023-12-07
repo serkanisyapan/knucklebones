@@ -1,12 +1,20 @@
 import type { Player } from "../types/GameTypes";
+import { calcPlayerScore } from "./diceCalculations";
 
 function checkWinningCondition(players: Player[]) {
-  const checkDices = players.map((player) => {
-    const checkThis = player.board.every((b) => b.dices.length === 3);
-    return checkThis;
+  const checkWinner = players.map((player) => {
+    const isBoardFull = player.board.every((b) => b.dices.length === 3);
+    const playerScore = calcPlayerScore(player.board);
+    return { isBoardFull, playerScore };
   });
-  if (checkDices[0]) return "Player 1 Wins";
-  if (checkDices[1]) return "Player 2 Wins";
+  for (let i = 0; i < checkWinner.length; i++) {
+    if (checkWinner[i].isBoardFull) {
+      if (checkWinner[0].playerScore > checkWinner[1].playerScore)
+        return "Player 1 Wins";
+      if (checkWinner[0].playerScore < checkWinner[1].playerScore)
+        return "Player 2 Wins";
+    }
+  }
 }
 
 export { checkWinningCondition };
