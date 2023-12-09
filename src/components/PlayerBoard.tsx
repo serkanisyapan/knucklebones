@@ -1,14 +1,23 @@
 import { Dice } from "./Dice";
 import { calcColDiceSum, calcPlayerScore } from "../helpers/diceCalculations";
+import placeSound from "../assets/placeDice.mp3";
 import type { PlayerBoard as BoardType } from "../types/GameTypes";
+import { useEffect, useState } from "react";
 
 export const PlayerBoard = ({ player, playerTurn, placeDice }: BoardType) => {
+  const [placeDiceSound, setPlaceDiceSound] = useState<HTMLAudioElement | null>(
+    null
+  );
   const playerScore = calcPlayerScore(player.board);
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";
     if (index === 2) return "rounded-tr-md rounded-br-md";
   }
+
+  useEffect(() => {
+    setPlaceDiceSound(new Audio(placeSound));
+  }, []);
 
   return (
     <div>
@@ -23,6 +32,7 @@ export const PlayerBoard = ({ player, playerTurn, placeDice }: BoardType) => {
               <div
                 onClick={() => {
                   if (dices.length === 3 || playerTurn !== player.id) return;
+                  if (placeDiceSound) placeDiceSound.play();
                   placeDice(col, playerTurn);
                 }}
                 className={`bg-slate-700 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 justify-center ${

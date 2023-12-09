@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
 import { pickRandomDiceNumber, rollFirstDice } from "../helpers/rollDice";
@@ -8,6 +8,7 @@ import {
 } from "../helpers/diceCalculations";
 import type { BoardState, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
+import rollDiceSound from "../assets/dice.mp3";
 
 const playerBoard: BoardState[] = [
   { id: 0, score: 0, dices: [] },
@@ -16,7 +17,11 @@ const playerBoard: BoardState[] = [
 ];
 
 export const Game = () => {
-  const [dice, setDice] = useState<number>(rollFirstDice());
+  const [dice, setDice] = useState({ dice: rollFirstDice() });
+  const [diceState, setDiceState] = useState({
+    state: "rolling",
+    dice: 1,
+  });
   const [players, setPlayers] = useState<Player[]>([
     { id: 1, playerName: "Player 1", board: playerBoard },
     { id: 2, playerName: "Player 2", board: playerBoard },
@@ -24,13 +29,39 @@ export const Game = () => {
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
   const checkWinner = checkWinningCondition(players);
 
+  useEffect(() => {
+    if (checkWinner) return;
+    let timesRolled = 0;
+    function diceRollInterval() {
+      timesRolled += 1;
+      if (timesRolled < 6) {
+        const pickDice = rollFirstDice();
+        setDiceState({ state: "rolling", dice: pickDice });
+      } else {
+        clearInterval(rollInterval);
+        setDiceState({ state: "rolled", dice: dice.dice });
+      }
+    }
+
+    const rollInterval = setInterval(() => diceRollInterval(), 80);
+
+    return () => clearInterval(rollInterval);
+  }, [dice]);
+
+  useEffect(() => {
+    if (checkWinner) return;
+    new Audio(rollDiceSound).play();
+  }, [dice]);
+
   function rollDice() {
-    const rollDice = pickRandomDiceNumber();
-    setDice(rollDice);
+    setTimeout(() => {
+      const rollDice = pickRandomDiceNumber();
+      setDice({ dice: rollDice });
+    }, 500);
   }
 
   function placeDiceToBoard(col: BoardState, playerId: number) {
-    if (checkWinner) return;
+    if (checkWinner || diceState.state === "rolling") return;
     // @ts-ignore
     setPlayers((players) => {
       const updatedPlayers = players.map((player) => {
@@ -39,12 +70,12 @@ export const Game = () => {
             if (player.id === playerId) {
               const updatedDices = [
                 ...column.dices,
-                { color: "bg-[#f2ebcf]", die: dice },
+                { color: "bg-[#f2ebcf]", die: dice.dice },
               ];
               const updateScoreAndColor = updateDiceScoreAndColor(updatedDices);
               return { ...column, ...updateScoreAndColor };
             }
-            return destroyOpponentDice(playerId, players, column.id, dice);
+            return destroyOpponentDice(playerId, players, column.id, dice.dice);
           }
           return column;
         });
@@ -53,10 +84,13 @@ export const Game = () => {
       return updatedPlayers;
     });
 
+    setDiceState((prevState) => {
+      return { ...prevState, state: "rolling" };
+    });
+
     setPlayerTurn((prevPlayer) =>
       prevPlayer === players[0].id ? players[1].id : players[0].id
     );
-
     rollDice();
   }
 
@@ -71,7 +105,8 @@ export const Game = () => {
         ) : (
           <Dice
             diceColor="bg-[#f2ebcf]"
-            diceNumber={dice}
+            diceState={diceState}
+            diceNumber={dice.dice}
             isRollingDice={true}
           />
         )}
