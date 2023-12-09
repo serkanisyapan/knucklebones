@@ -9,6 +9,7 @@ import {
 import type { BoardState, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
+import { updatePlayers } from "../helpers/updatePlayers";
 
 const playerBoard: BoardState[] = [
   { id: 0, score: 0, dices: [] },
@@ -64,24 +65,8 @@ export const Game = () => {
     if (checkWinner || diceState.state === "rolling") return;
     // @ts-ignore
     setPlayers((players) => {
-      const updatedPlayers = players.map((player) => {
-        const updatedBoard = player.board.map((column) => {
-          if (column.id === col.id) {
-            if (player.id === playerId) {
-              const updatedDices = [
-                ...column.dices,
-                { color: "bg-[#f2ebcf]", die: dice.dice },
-              ];
-              const updateScoreAndColor = updateDiceScoreAndColor(updatedDices);
-              return { ...column, ...updateScoreAndColor };
-            }
-            return destroyOpponentDice(playerId, players, column.id, dice.dice);
-          }
-          return column;
-        });
-        return { ...player, board: updatedBoard };
-      });
-      return updatedPlayers;
+      const updatedPlayerBoards = updatePlayers(players, col, playerId, dice);
+      return updatedPlayerBoards;
     });
 
     setDiceState((prevState) => {
