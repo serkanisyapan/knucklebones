@@ -8,6 +8,10 @@ interface PlayerBoard {
   player: Player;
   placeDice: (col: BoardState, playerId: number) => void;
   playerTurn: number;
+  diceState: {
+    state: string;
+    dice: number;
+  };
 }
 
 interface Dice {

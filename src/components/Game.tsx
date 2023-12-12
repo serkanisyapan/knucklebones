@@ -101,6 +101,7 @@ export const Game = () => {
               placeDice={placeDiceToBoard}
               playerTurn={playerTurn}
               player={player}
+              diceState={diceState}
             />
           );
         })}

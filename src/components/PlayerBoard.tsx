@@ -1,14 +1,21 @@
 import { Dice } from "./Dice";
 import { calcColDiceSum, calcPlayerScore } from "../helpers/diceCalculations";
+import { useEffect, useRef, useState } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import placeSound from "../assets/placeDice.mp3";
 import type { PlayerBoard as BoardType } from "../types/GameTypes";
-import { useEffect, useState } from "react";
 
-export const PlayerBoard = ({ player, playerTurn, placeDice }: BoardType) => {
+export const PlayerBoard = ({
+  player,
+  playerTurn,
+  placeDice,
+  diceState,
+}: BoardType) => {
   const [placeDiceSound, setPlaceDiceSound] = useState<HTMLAudioElement | null>(
     null
   );
   const playerScore = calcPlayerScore(player.board);
+  const [diceAnimation, enable] = useAutoAnimate({ duration: 120 });
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";
@@ -39,6 +46,7 @@ export const PlayerBoard = ({ player, playerTurn, placeDice }: BoardType) => {
                   dices.length < 3 && "hover:bg-slate-600 hover:cursor-pointer"
                 } ${boardCorners}`}
                 key={index}
+                ref={diceAnimation}
               >
                 {dices.map((dice, idx) => (
                   <Dice
@@ -46,6 +54,7 @@ export const PlayerBoard = ({ player, playerTurn, placeDice }: BoardType) => {
                     diceNumber={dice.die}
                     diceColor={dice.color}
                     isRollingDice={false}
+                    diceState={diceState}
                   />
                 ))}
               </div>

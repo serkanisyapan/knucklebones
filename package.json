@@ -13,6 +13,7 @@
     "@astrojs/check": "^0.3.1",
     "@astrojs/react": "^3.0.4",
     "@astrojs/tailwind": "^5.0.2",
+    "@formkit/auto-animate": "^0.8.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "astro": "^3.5.4",
