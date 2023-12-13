@@ -1,9 +1,13 @@
 import { Dice } from "./Dice";
 import { calcColDiceSum, calcPlayerScore } from "../helpers/diceCalculations";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import placeSound from "../assets/placeDice.mp3";
-import type { PlayerBoard as BoardType } from "../types/GameTypes";
+import type {
+  PlayerBoard as BoardType,
+  Dice as DiceType,
+  Player,
+} from "../types/GameTypes";
 
 export const PlayerBoard = ({
   player,
@@ -22,6 +26,16 @@ export const PlayerBoard = ({
     if (index === 2) return "rounded-tr-md rounded-br-md";
   }
 
+  function checkClickableCols(
+    dices: DiceType[],
+    player: Player,
+    playerTurn: number
+  ) {
+    if (playerTurn !== player.id)
+      return "hover:cursor-not-allowed hover:bg-slate-700";
+    if (dices.length < 3) return "hover:bg-slate-600 hover:cursor-pointer";
+  }
+
   useEffect(() => {
     setPlaceDiceSound(new Audio(placeSound));
   }, []);
@@ -33,6 +47,7 @@ export const PlayerBoard = ({
           const { dices } = col;
           const getDiceSum = calcColDiceSum(dices);
           const boardCorners = boardCornersRounded(index);
+          const checkCols = checkClickableCols(dices, player, playerTurn);
           return (
             <div key={index} className="flex flex-col items-center">
               <span className="text-xl">{getDiceSum || 0}</span>
@@ -42,9 +57,7 @@ export const PlayerBoard = ({
                   if (placeDiceSound) placeDiceSound.play();
                   placeDice(col, playerTurn);
                 }}
-                className={`bg-slate-700 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 justify-center ${
-                  dices.length < 3 && "hover:bg-slate-600 hover:cursor-pointer"
-                } ${boardCorners}`}
+                className={`bg-slate-700 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 justify-center ${boardCorners} ${checkCols}`}
                 key={index}
                 ref={diceAnimation}
               >

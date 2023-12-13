@@ -29,6 +29,7 @@ export const Game = () => {
   ]);
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
   const checkWinner = checkWinningCondition(players);
+  const isFirstPlayer = playerTurn === players[0].id;
 
   useEffect(() => {
     if (checkWinner) return;
@@ -80,21 +81,23 @@ export const Game = () => {
   }
 
   return (
-    <div>
-      <p className="text-white text-lg text-center mb-5">
-        {checkWinner ? checkWinner : `Player ${playerTurn}'s Turn`}
-      </p>
-      <div className="flex flex-row items-center gap-10">
-        {checkWinner ? (
-          <div className="w-16 h-16"></div>
-        ) : (
-          <Dice
-            diceColor="bg-[#f2ebcf]"
-            diceState={diceState}
-            diceNumber={dice.dice}
-            isRollingDice={true}
-          />
-        )}
+    <div
+      className={`flex flex-row ${
+        isFirstPlayer ? "items-end" : "items-start"
+      } gap-20`}
+    >
+      {checkWinner ? (
+        <div className="w-16 h-16"></div>
+      ) : (
+        <Dice
+          diceColor="bg-[#f2ebcf]"
+          diceState={diceState}
+          diceNumber={dice.dice}
+          isRollingDice={true}
+          isFirstPlayer={isFirstPlayer}
+        />
+      )}
+      <div className="flex flex-col-reverse items-center gap-20">
         {players.map((player) => {
           return (
             <PlayerBoard
