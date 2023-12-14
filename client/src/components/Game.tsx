@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
 import { pickRandomDiceNumber, rollFirstDice } from "../helpers/rollDice";
-import {
-  destroyOpponentDice,
-  updateDiceScoreAndColor,
-} from "../helpers/diceCalculations";
 import type { BoardState, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
+import { io } from "socket.io-client";
 
 const playerBoard: BoardState[] = [
   { id: 0, score: 0, dices: [] },
@@ -54,6 +51,28 @@ export const Game = () => {
     if (checkWinner) return;
     new Audio(rollDiceSound).play();
   }, [dice]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000");
+    function onConnect() {
+      console.log("player connected");
+    }
+    function onDisconnect() {
+      console.log("player disconnected");
+    }
+    function onHello() {
+      console.log("hello from socket");
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("hello_from_socket", onHello);
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("hello_from_socket", onHello);
+    };
+  }, []);
 
   function rollDice() {
     setTimeout(() => {
