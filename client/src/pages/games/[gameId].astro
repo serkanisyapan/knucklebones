@@ -26,14 +26,8 @@ const { gameId } = Astro.params
 
     function handleCopyLink() {
         const getLinkText = document.getElementById("link-text")?.innerText
-        const copyText = async () => {
-            try {
-                await navigator.clipboard.writeText(getLinkText);
-            } catch (err) {
-                console.error('Failed to copy: ', err);
-            }
-        }
-        copyText()
+        if (!getLinkText) return;
+        navigator.clipboard.writeText(getLinkText)
         handleTextVisibilty()
     }
     document.getElementById("link-text")?.addEventListener("click", handleCopyLink)
