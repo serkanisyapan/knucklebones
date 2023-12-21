@@ -8,12 +8,31 @@ const io = new Server({
 
 io.listen(3000);
 
-io.on("connect", function (socket) {
-  console.log("user connected");
+const players = [];
 
-  socket.emit("hello_from_socket");
+const playerBoard = [
+  { id: 0, score: 0, dices: [] },
+  { id: 1, score: 0, dices: [] },
+  { id: 2, score: 0, dices: [] },
+];
+
+io.on("connect", function (socket) {
+  socket.on("joinGame", function (data) {
+    if (players.length < 2) {
+      players.push({
+        id: socket.id,
+        board: playerBoard,
+        playerName: data,
+      });
+    }
+    io.emit("players", players);
+  });
 
   socket.on("disconnect", function () {
-    console.log("user disconnected");
+    players.splice(
+      players.findIndex((player) => player.id === socket.id),
+      1
+    );
+    io.emit("players", players);
   });
 });

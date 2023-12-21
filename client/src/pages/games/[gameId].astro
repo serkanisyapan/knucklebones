@@ -1,0 +1,40 @@
+---
+import { CreatePlayer } from "../../components/CreatePlayer";
+import Layout from "../../layouts/Layout.astro";
+const { gameId } = Astro.params
+---
+
+<Layout title="knucklebones game">
+    <div class="text-white mb-8">
+        <h1 class="text-xl mb-2">Share the link below with your friend to play! <br/>And pick your username to start!</h1>
+        <div class="flex justify-between">
+            <p id="link-text" class="cursor-pointer">http://localhost:3000/games/{gameId}</p>
+            <p id="copy-text" class="opacity-0">Copied!</p>
+        </div>
+    </div>
+    <CreatePlayer gameId={gameId} client:load/>
+</Layout>
+
+<script>
+    function handleTextVisibilty() {
+        const getText = document.getElementById("copy-text")
+        getText?.classList.add("opacity-100")
+        setTimeout(() => {
+            getText?.classList.remove("opacity-100")
+        }, 800)
+    }
+
+    function handleCopyLink() {
+        const getLinkText = document.getElementById("link-text")?.innerText
+        const copyText = async () => {
+            try {
+                await navigator.clipboard.writeText(getLinkText);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+        copyText()
+        handleTextVisibilty()
+    }
+    document.getElementById("link-text")?.addEventListener("click", handleCopyLink)
+</script>
