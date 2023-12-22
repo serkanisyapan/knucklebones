@@ -8,7 +8,7 @@ const { gameId } = Astro.params
     <div class="text-white mb-8">
         <h1 class="text-xl mb-2">Share the link below with your friend to play! <br/>And pick your username to start!</h1>
         <div class="flex justify-between">
-            <p id="link-text" class="cursor-pointer">http://localhost:3000/games/{gameId}</p>
+            <p id="link-text" class="cursor-pointer">http://localhost:4321/games/{gameId}</p>
             <p id="copy-text" class="opacity-0">Copied!</p>
         </div>
     </div>
@@ -27,7 +27,7 @@ const { gameId } = Astro.params
     function handleCopyLink() {
         const getLinkText = document.getElementById("link-text")?.innerText
         if (!getLinkText) return;
-        navigator.clipboard.writeText(getLinkText)
+        navigator.clipboard.writeText(getLinkText);
         handleTextVisibilty()
     }
     document.getElementById("link-text")?.addEventListener("click", handleCopyLink)

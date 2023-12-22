@@ -17,6 +17,7 @@ const playerBoard = [
 ];
 
 io.on("connect", function (socket) {
+  console.log(`connected to socket ${socket.id}`);
   socket.on("joinGame", function (data) {
     if (players.length < 2) {
       players.push({
