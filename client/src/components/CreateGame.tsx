@@ -5,6 +5,7 @@ const socket = io("http://localhost:3000");
 export const CreateGame = () => {
   function createNewGame() {
     const socketId = socket.id;
+    socket.emit("createGame", socketId);
     navigate(`/games/${socketId}`);
   }
 

@@ -34,8 +34,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       });
       return;
     }
-    socket.emit("joinGame", playerName.text);
-    getPlayers();
+    socket.emit("joinGame", { gameId, playerName: playerName.text });
   }
 
   return (

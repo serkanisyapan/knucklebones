@@ -8,7 +8,7 @@ const io = new Server({
 
 io.listen(3000);
 
-const players = [];
+const rooms = {};
 
 const playerBoard = [
   { id: 0, score: 0, dices: [] },
@@ -16,24 +16,46 @@ const playerBoard = [
   { id: 2, score: 0, dices: [] },
 ];
 
+function createNewRoom(roomId) {
+  if (Object.hasOwn(rooms, roomId)) return;
+  rooms[roomId] = {
+    roomId,
+    players: [],
+  };
+}
+
+function joinRoom(playerName, gameId, socketId) {
+  if (!Object.hasOwn(rooms, gameId)) {
+    throw new Error("Room does not exist!");
+    return;
+  }
+  const findRoom = rooms[gameId];
+  if (findRoom.players.length < 2) {
+    findRoom.players.push({
+      id: socketId,
+      playerName: playerName,
+      board: playerBoard,
+    });
+  }
+}
+
 io.on("connect", function (socket) {
-  console.log(`connected to socket ${socket.id}`);
+  socket.on("createGame", function (data) {
+    createNewRoom(data);
+  });
+
   socket.on("joinGame", function (data) {
-    if (players.length < 2) {
-      players.push({
-        id: socket.id,
-        board: playerBoard,
-        playerName: data,
-      });
-    }
-    io.emit("players", players);
+    const socketId = socket.id;
+    const { gameId, playerName } = data;
+    joinRoom(playerName, gameId, socketId);
   });
 
   socket.on("disconnect", function () {
-    players.splice(
-      players.findIndex((player) => player.id === socket.id),
-      1
-    );
-    io.emit("players", players);
+    // players.splice(
+    //   players.findIndex((player) => player.id === socket.id),
+    //   1
+    // );
+    // io.emit("players", players);
+    console.log("disconnected");
   });
 });
