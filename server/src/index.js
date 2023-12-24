@@ -27,7 +27,6 @@ function createNewRoom(roomId) {
 function joinRoom(playerName, gameId, socketId) {
   if (!Object.hasOwn(rooms, gameId)) {
     throw new Error("Room does not exist!");
-    return;
   }
   const findRoom = rooms[gameId];
   if (findRoom.players.length < 2) {
@@ -48,7 +47,10 @@ io.on("connect", function (socket) {
     const socketId = socket.id;
     const { gameId, playerName } = data;
     joinRoom(playerName, gameId, socketId);
+    io.emit("players", rooms);
   });
+
+  socket.emit("getRooms", rooms);
 
   socket.on("disconnect", function () {
     // players.splice(

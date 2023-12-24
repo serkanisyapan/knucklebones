@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import type { Player } from "../types/GameTypes";
 
@@ -13,6 +13,13 @@ interface CreatePlayer {
   gameId: string | undefined;
 }
 
+interface Rooms {
+  [key: string]: {
+    roomId: string;
+    players: Player[];
+  };
+}
+
 export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   const [playerName, setPlayerName] = useState<PlayerName>({
     text: "",
@@ -20,9 +27,11 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   });
   const [players, setPlayers] = useState<Player[]>([]);
 
-  function getPlayers() {
-    socket.on("players", function (playerList: Player[]) {
-      setPlayers(playerList);
+  function getPlayers(state: string) {
+    socket.on(state, function (rooms: Rooms) {
+      if (!gameId) return;
+      const findRoom = rooms[gameId];
+      setPlayers(findRoom.players);
     });
   }
 
@@ -35,7 +44,12 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       return;
     }
     socket.emit("joinGame", { gameId, playerName: playerName.text });
+    getPlayers("players");
   }
+
+  useEffect(() => {
+    getPlayers("getRooms");
+  }, [socket]);
 
   return (
     <div className="text-white flex flex-col gap-3">
