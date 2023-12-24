@@ -7,22 +7,17 @@ import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
 
-const playerBoard: BoardState[] = [
-  { id: 0, score: 0, dices: [] },
-  { id: 1, score: 0, dices: [] },
-  { id: 2, score: 0, dices: [] },
-];
+interface GameProps {
+  players: Player[];
+  setPlayers: (players: Player[]) => void;
+}
 
-export const Game = () => {
+export const Game = ({ players, setPlayers }: GameProps) => {
   const [dice, setDice] = useState({ dice: rollFirstDice() });
   const [diceState, setDiceState] = useState({
     state: "rolling",
     dice: 1,
   });
-  const [players, setPlayers] = useState<Player[]>([
-    { id: 1, playerName: "Player 1", board: playerBoard },
-    { id: 2, playerName: "Player 2", board: playerBoard },
-  ]);
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
   const checkWinner = checkWinningCondition(players);
   const isFirstPlayer = playerTurn === players[0].id;
