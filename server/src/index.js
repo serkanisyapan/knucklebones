@@ -28,6 +28,7 @@ function joinRoom(playerName, gameId, socketId) {
   if (!Object.hasOwn(rooms, gameId)) {
     throw new Error("Room does not exist!");
   }
+  console.log(rooms);
   const findRoom = rooms[gameId];
   if (findRoom.players.length < 2) {
     findRoom.players.push({
@@ -44,20 +45,19 @@ io.on("connect", function (socket) {
   });
 
   socket.on("joinGame", function (data) {
-    const socketId = socket.id;
-    const { gameId, playerName } = data;
-    joinRoom(playerName, gameId, socketId);
+    const { gameId, playerName, id } = data;
+    joinRoom(playerName, gameId, id);
     io.emit("players", rooms);
   });
 
   socket.emit("getRooms", rooms);
 
   socket.on("disconnect", function () {
+    console.log("disconnected", socket.id);
     // players.splice(
     //   players.findIndex((player) => player.id === socket.id),
     //   1
     // );
     // io.emit("players", players);
-    console.log("disconnected");
   });
 });

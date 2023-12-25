@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import type { Player } from "../types/GameTypes";
 import { Game } from "./Game";
 import { ShareLink } from "./ShareLink";
+import { v4 as uuidv4 } from "uuid";
 
 const socket = io("http://localhost:3000");
 
@@ -38,6 +39,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   }
 
   function pickPlayerName(playerName: PlayerName) {
+    const id = uuidv4();
     if (playerName.text.length === 0) {
       setPlayerName({
         text: "",
@@ -45,7 +47,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       });
       return;
     }
-    socket.emit("joinGame", { gameId, playerName: playerName.text });
+    socket.emit("joinGame", { gameId, playerName: playerName.text, id });
     getPlayers("players");
   }
 
