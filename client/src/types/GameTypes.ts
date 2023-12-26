@@ -1,5 +1,5 @@
 interface Player {
-  id: number;
+  id: string;
   playerName: string;
   board: BoardState[];
 }

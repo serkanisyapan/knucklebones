@@ -26,9 +26,8 @@ function createNewRoom(roomId) {
 
 function joinRoom(playerName, gameId, socketId) {
   if (!Object.hasOwn(rooms, gameId)) {
-    throw new Error("Room does not exist!");
+    createNewRoom(gameId)
   }
-  console.log(rooms);
   const findRoom = rooms[gameId];
   if (findRoom.players.length < 2) {
     findRoom.players.push({

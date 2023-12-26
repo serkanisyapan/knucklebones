@@ -4,8 +4,10 @@ import type { Player } from "../types/GameTypes";
 import { Game } from "./Game";
 import { ShareLink } from "./ShareLink";
 import { v4 as uuidv4 } from "uuid";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 const socket = io("http://localhost:3000");
+const id = uuidv4();
 
 interface PlayerName {
   text: string;
@@ -29,6 +31,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     text: "",
     errorText: "",
   });
+  const isPlayerJoined = checkIsPlayerJoined(id);
 
   function getPlayers(state: string) {
     socket.on(state, function (rooms: Rooms) {
@@ -39,7 +42,6 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   }
 
   function pickPlayerName(playerName: PlayerName) {
-    const id = uuidv4();
     if (playerName.text.length === 0) {
       setPlayerName({
         text: "",
@@ -49,6 +51,11 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     }
     socket.emit("joinGame", { gameId, playerName: playerName.text, id });
     getPlayers("players");
+  }
+
+  function checkIsPlayerJoined(id: string) {
+    const checkPlayer = players.find((player) => player.id === id);
+    return checkPlayer;
   }
 
   useEffect(() => {
@@ -63,24 +70,32 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     renderGame = (
       <div className="text-white flex flex-col gap-3">
         <ShareLink gameId={gameId} />
-        <div className="flex gap-4">
-          <input
-            onChange={(event) =>
-              setPlayerName((previous) => {
-                return { ...previous, text: event.target.value };
-              })
-            }
-            className="bg-gray-50 text-gray-900 text-lg rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            type="text"
-            id="playerName"
-            name="playerName"
-            placeholder="Username..."
-            value={playerName.text}
-          />
-          <button type="button" onClick={() => pickPlayerName(playerName)}>
-            JOIN
-          </button>
-        </div>
+        {isPlayerJoined ? (
+          <div className="text-lg flex flex-col items-center gap-3">
+            <LoadingSpinner />
+            <p>Waiting for other player to join to the game...</p>
+            <p>1 / 2</p>
+          </div>
+        ) : (
+          <div className="flex gap-4">
+            <input
+              onChange={(event) =>
+                setPlayerName((previous) => {
+                  return { ...previous, text: event.target.value };
+                })
+              }
+              className="bg-gray-50 text-gray-900 text-lg rounded-lg w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              type="text"
+              id="playerName"
+              name="playerName"
+              placeholder="Username..."
+              value={playerName.text}
+            />
+            <button type="button" onClick={() => pickPlayerName(playerName)}>
+              JOIN
+            </button>
+          </div>
+        )}
         <div className="w-64 h-7">
           {playerName.errorText && <p>{playerName.errorText}</p>}
         </div>
