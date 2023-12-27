@@ -1,26 +1,33 @@
 import { useEffect, useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
-import { pickRandomDiceNumber, rollFirstDice } from "../helpers/rollDice";
+import { pickRandomDiceNumber } from "../helpers/rollDice";
 import type { BoardState, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
+import { io } from "socket.io-client";
 
 interface GameProps {
   players: Player[];
   setPlayers: (players: Player[]) => void;
 }
 
+const socket = io("http://localhost:3000");
+
 export const Game = ({ players, setPlayers }: GameProps) => {
-  const [dice, setDice] = useState({ dice: rollFirstDice() });
+  const [dice, setDice] = useState({ dice: 0 });
   const [diceState, setDiceState] = useState({
     state: "rolling",
-    dice: 1,
+    dice: 0,
   });
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
   const checkWinner = checkWinningCondition(players);
   const isFirstPlayer = playerTurn === players[0].id;
+
+  useEffect(() => {
+    rollFirstDice();
+  }, []);
 
   useEffect(() => {
     if (checkWinner) return;
@@ -28,7 +35,7 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     function diceRollInterval() {
       timesRolled += 1;
       if (timesRolled < 6) {
-        const pickDice = rollFirstDice();
+        const pickDice = Math.floor(Math.random() * 5) + 1;
         setDiceState({ state: "rolling", dice: pickDice });
       } else {
         clearInterval(rollInterval);
@@ -45,6 +52,13 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     if (checkWinner) return;
     new Audio(rollDiceSound).play();
   }, [dice]);
+
+  function rollFirstDice() {
+    socket.emit("rollDice");
+    socket.on("rolledDice", function (diceNumber: number) {
+      setDice({ dice: diceNumber });
+    });
+  }
 
   function rollDice() {
     setTimeout(() => {

@@ -26,7 +26,7 @@ function createNewRoom(roomId) {
 
 function joinRoom(playerName, gameId, socketId) {
   if (!Object.hasOwn(rooms, gameId)) {
-    createNewRoom(gameId)
+    createNewRoom(gameId);
   }
   const findRoom = rooms[gameId];
   if (findRoom.players.length < 2) {
@@ -38,6 +38,11 @@ function joinRoom(playerName, gameId, socketId) {
   }
 }
 
+function diceRoll() {
+  const diceRoll = Math.floor(Math.random() * 6) + 1;
+  return diceRoll;
+}
+
 io.on("connect", function (socket) {
   socket.on("createGame", function (data) {
     createNewRoom(data);
@@ -47,6 +52,11 @@ io.on("connect", function (socket) {
     const { gameId, playerName, id } = data;
     joinRoom(playerName, gameId, id);
     io.emit("players", rooms);
+  });
+
+  socket.on("rollDice", function () {
+    const dice = diceRoll();
+    io.emit("rolledDice", dice);
   });
 
   socket.emit("getRooms", rooms);
