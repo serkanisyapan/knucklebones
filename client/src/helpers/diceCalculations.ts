@@ -57,12 +57,12 @@ function checkDiceColor(dices: Dice[]) {
 }
 
 function destroyOpponentDice(
-  playerId: number,
+  playerId: string,
   players: Player[],
   colId: number,
   dice: number
 ) {
-  const opponentId = playerId === 1 ? 2 : 1;
+  const opponentId = playerId === "1" ? "2" : "1";
   const opponentColumn = players.find((player) => player.id === opponentId)
     ?.board[colId];
   if (!opponentColumn) return;

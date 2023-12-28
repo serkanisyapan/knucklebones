@@ -6,8 +6,8 @@ interface Player {
 
 interface PlayerBoard {
   player: Player;
-  placeDice: (col: BoardState, playerId: number) => void;
-  playerTurn: number;
+  placeDice: (col: BoardState, playerId: string) => void;
+  playerTurn: string;
   diceState: {
     state: string;
     dice: number;

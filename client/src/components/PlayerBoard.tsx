@@ -29,7 +29,7 @@ export const PlayerBoard = ({
   function checkClickableCols(
     dices: DiceType[],
     player: Player,
-    playerTurn: number
+    playerTurn: string
   ) {
     if (playerTurn !== player.id)
       return "hover:cursor-not-allowed hover:bg-slate-700";

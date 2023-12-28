@@ -11,7 +11,7 @@ interface Dice {
 function updatePlayers(
   players: Player[],
   col: BoardState,
-  playerId: number,
+  playerId: string,
   dice: Dice
 ) {
   const updatedPlayers = players.map((player) => {

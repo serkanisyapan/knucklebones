@@ -67,7 +67,7 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     }, 500);
   }
 
-  function placeDiceToBoard(col: BoardState, playerId: number) {
+  function placeDiceToBoard(col: BoardState, playerId: string) {
     if (checkWinner || diceState.state === "rolling") return;
     // @ts-ignore
     setPlayers((players) => {
