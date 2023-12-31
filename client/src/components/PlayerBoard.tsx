@@ -18,26 +18,31 @@ export const PlayerBoard = ({
   const [placeDiceSound, setPlaceDiceSound] = useState<HTMLAudioElement | null>(
     null
   );
+  const [playerNameOnStorage, setPlayerNameOnStorage] = useState<string>("");
   const playerScore = calcPlayerScore(player.board);
   const [diceAnimation, enable] = useAutoAnimate({ duration: 120 });
+  const checkPlayersTurn =
+    player.playerName !== playerNameOnStorage || playerTurn !== player.id;
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";
     if (index === 2) return "rounded-tr-md rounded-br-md";
   }
 
-  function checkClickableCols(
-    dices: DiceType[],
-    player: Player,
-    playerTurn: string
-  ) {
-    if (playerTurn !== player.id)
-      return "hover:cursor-not-allowed hover:bg-slate-700";
+  function checkClickableCols(dices: DiceType[], player: Player) {
+    if (checkPlayersTurn) return "hover:cursor-not-allowed hover:bg-slate-700";
     if (dices.length < 3) return "hover:bg-slate-600 hover:cursor-pointer";
+  }
+
+  function getPlayerNameFromStorage() {
+    const name = localStorage.getItem("playerName");
+    if (!name) return;
+    setPlayerNameOnStorage(name);
   }
 
   useEffect(() => {
     setPlaceDiceSound(new Audio(placeSound));
+    getPlayerNameFromStorage();
   }, []);
 
   return (
@@ -47,13 +52,13 @@ export const PlayerBoard = ({
           const { dices } = col;
           const getDiceSum = calcColDiceSum(dices);
           const boardCorners = boardCornersRounded(index);
-          const checkCols = checkClickableCols(dices, player, playerTurn);
+          const checkCols = checkClickableCols(dices, player);
           return (
             <div key={index} className="flex flex-col items-center">
               <span className="text-xl">{getDiceSum || 0}</span>
               <div
                 onClick={() => {
-                  if (dices.length === 3 || playerTurn !== player.id) return;
+                  if (dices.length === 3 || checkPlayersTurn) return;
                   if (placeDiceSound) placeDiceSound.play();
                   placeDice(col, playerTurn);
                 }}
