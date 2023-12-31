@@ -10,9 +10,9 @@ function checkWinningCondition(players: Player[]) {
   for (let i = 0; i < checkWinner.length; i++) {
     if (checkWinner[i].isBoardFull) {
       if (checkWinner[0].playerScore > checkWinner[1].playerScore)
-        return "Player 1 Wins";
+        return `${players[0].playerName} Wins`;
       if (checkWinner[0].playerScore < checkWinner[1].playerScore)
-        return "Player 2 Wins";
+        return `${players[1].playerName} Wins`;
     }
   }
 }

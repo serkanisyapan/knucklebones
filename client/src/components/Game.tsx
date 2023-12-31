@@ -71,8 +71,7 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     if (checkWinner || diceState.state === "rolling") return;
     // @ts-ignore
     setPlayers((players) => {
-      const updatedPlayerBoards = updatePlayers(players, col, playerId, dice);
-      return updatedPlayerBoards;
+      return updatePlayers(players, col, playerId, dice);
     });
 
     setDiceState((prevState) => {

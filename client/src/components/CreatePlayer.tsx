@@ -42,6 +42,9 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   }
 
   function pickPlayerName(playerName: PlayerName) {
+    socket.on("playername_exists", function (data) {
+      setPlayerName({ text: "", errorText: "Playername already exists." });
+    });
     if (playerName.text.length === 0) {
       setPlayerName({
         text: "",
@@ -50,12 +53,17 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       return;
     }
     socket.emit("joinGame", { gameId, playerName: playerName.text, id });
+    savePlayerNameToStorage(playerName.text);
     getPlayers("players");
   }
 
   function checkIsPlayerJoined(id: string) {
     const checkPlayer = players.find((player) => player.id === id);
     return checkPlayer;
+  }
+
+  function savePlayerNameToStorage(name: string) {
+    localStorage.setItem("playerName", name);
   }
 
   useEffect(() => {

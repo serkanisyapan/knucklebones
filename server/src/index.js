@@ -24,23 +24,34 @@ function createNewRoom(roomId) {
   };
 }
 
-function joinRoom(playerName, gameId, socketId) {
+function joinRoom(playerName, gameId, socketId, socket) {
   if (!Object.hasOwn(rooms, gameId)) {
     createNewRoom(gameId);
   }
   const findRoom = rooms[gameId];
   if (findRoom.players.length < 2) {
-    findRoom.players.push({
-      id: socketId,
-      playerName: playerName,
-      board: playerBoard,
-    });
+    const checkName = checkPlayernameExistInRoom(findRoom, playerName);
+    if (checkName) {
+      socket.emit("playername_exists", "this playername already exists");
+      return;
+    } else {
+      findRoom.players.push({
+        id: socketId,
+        playerName: playerName,
+        board: playerBoard,
+      });
+    }
   }
 }
 
 function diceRoll() {
   const diceRoll = Math.floor(Math.random() * 6) + 1;
   return diceRoll;
+}
+
+function checkPlayernameExistInRoom(room, name) {
+  const getPlayerName = room.players.map((player) => player.playerName);
+  return getPlayerName.includes(name);
 }
 
 io.on("connect", function (socket) {
@@ -50,7 +61,7 @@ io.on("connect", function (socket) {
 
   socket.on("joinGame", function (data) {
     const { gameId, playerName, id } = data;
-    joinRoom(playerName, gameId, id);
+    joinRoom(playerName, gameId, id, socket);
     io.emit("players", rooms);
   });
 
