@@ -31,6 +31,36 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   const checkWinner = checkWinningCondition(players);
   const isFirstPlayer = playerTurn === players[0].id;
 
+  function rollFirstDice() {
+    socket.emit("rollDice");
+    socket.on("rolledDice", function (diceNumber: number) {
+      setDice({ dice: diceNumber });
+    });
+  }
+
+  function rollDice() {
+    setTimeout(() => {
+      const rollDice = pickRandomDiceNumber();
+      setDice({ dice: rollDice });
+    }, 500);
+  }
+
+  function placeDiceToBoard(col: BoardState, playerId: string) {
+    if (checkWinner || diceState.state === "rolling") return;
+    // @ts-ignore
+    setPlayers((players) => {
+      const updatedPlayers = updatePlayers(players, col, playerId, dice);
+      socket.emit("placeDice", { updatedPlayers, gameId, playerTurn });
+      return updatedPlayers;
+    });
+
+    setDiceState((prevState) => {
+      return { ...prevState, state: "rolling" };
+    });
+
+    rollDice();
+  }
+
   useEffect(() => {
     rollFirstDice();
   }, []);
@@ -60,43 +90,12 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   }, [dice]);
 
   useEffect(() => {
-    socket.on("afterPlaceDice", function (data: Rooms) {
-      setPlayers(data.players);
+    socket.on("afterPlaceDice", function (data: any) {
+      const { newPlayerBoards, newPlayerTurn } = data;
+      setPlayers(newPlayerBoards.players);
+      setPlayerTurn(newPlayerTurn);
     });
   }, [socket, players]);
-
-  function rollFirstDice() {
-    socket.emit("rollDice");
-    socket.on("rolledDice", function (diceNumber: number) {
-      setDice({ dice: diceNumber });
-    });
-  }
-
-  function rollDice() {
-    setTimeout(() => {
-      const rollDice = pickRandomDiceNumber();
-      setDice({ dice: rollDice });
-    }, 500);
-  }
-
-  function placeDiceToBoard(col: BoardState, playerId: string) {
-    if (checkWinner || diceState.state === "rolling") return;
-    // @ts-ignore
-    setPlayers((players) => {
-      const updatedPlayers = updatePlayers(players, col, playerId, dice);
-      socket.emit("placeDice", { updatedPlayers, gameId });
-      return updatedPlayers;
-    });
-
-    setDiceState((prevState) => {
-      return { ...prevState, state: "rolling" };
-    });
-
-    setPlayerTurn((prevPlayer) =>
-      prevPlayer === players[0].id ? players[1].id : players[0].id
-    );
-    rollDice();
-  }
 
   return (
     <div

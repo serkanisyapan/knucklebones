@@ -78,9 +78,13 @@ io.on("connect", function (socket) {
   });
 
   socket.on("placeDice", function (data) {
-    const { gameId, updatedPlayers } = data;
-    const newBoard = placeDice(gameId, updatedPlayers);
-    io.emit("afterPlaceDice", newBoard);
+    const { gameId, updatedPlayers, playerTurn } = data;
+    const newPlayerBoards = placeDice(gameId, updatedPlayers);
+    const newPlayerTurn =
+      updatedPlayers[0].id === playerTurn
+        ? updatedPlayers[1].id
+        : updatedPlayers[0].id;
+    io.emit("afterPlaceDice", { newPlayerBoards, newPlayerTurn });
   });
 
   socket.emit("getRooms", rooms);
