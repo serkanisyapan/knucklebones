@@ -62,7 +62,8 @@ function destroyOpponentDice(
   colId: number,
   dice: number
 ) {
-  const opponentId = playerId === "1" ? "2" : "1";
+  const opponentId =
+    playerId === `${players[0].id}` ? `${players[1].id}` : `${players[0].id}`;
   const opponentColumn = players.find((player) => player.id === opponentId)
     ?.board[colId];
   if (!opponentColumn) return;

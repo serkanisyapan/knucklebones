@@ -44,6 +44,13 @@ function joinRoom(playerName, gameId, socketId, socket) {
   }
 }
 
+function placeDice(gameId, players) {
+  const findRoom = rooms[gameId];
+  if (!findRoom) return;
+  findRoom.players = players;
+  return findRoom;
+}
+
 function diceRoll() {
   const diceRoll = Math.floor(Math.random() * 6) + 1;
   return diceRoll;
@@ -68,6 +75,12 @@ io.on("connect", function (socket) {
   socket.on("rollDice", function () {
     const dice = diceRoll();
     io.emit("rolledDice", dice);
+  });
+
+  socket.on("placeDice", function (data) {
+    const { gameId, updatedPlayers } = data;
+    const newBoard = placeDice(gameId, updatedPlayers);
+    io.emit("afterPlaceDice", newBoard);
   });
 
   socket.emit("getRooms", rooms);

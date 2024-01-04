@@ -11,11 +11,17 @@ import { io } from "socket.io-client";
 interface GameProps {
   players: Player[];
   setPlayers: (players: Player[]) => void;
+  gameId: string | undefined;
+}
+
+interface Rooms {
+  roomId: string;
+  players: Player[];
 }
 
 const socket = io("http://localhost:3000");
 
-export const Game = ({ players, setPlayers }: GameProps) => {
+export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   const [dice, setDice] = useState({ dice: 0 });
   const [diceState, setDiceState] = useState({
     state: "rolling",
@@ -53,6 +59,12 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     new Audio(rollDiceSound).play();
   }, [dice]);
 
+  useEffect(() => {
+    socket.on("afterPlaceDice", function (data: Rooms) {
+      setPlayers(data.players);
+    });
+  }, [socket, players]);
+
   function rollFirstDice() {
     socket.emit("rollDice");
     socket.on("rolledDice", function (diceNumber: number) {
@@ -71,7 +83,9 @@ export const Game = ({ players, setPlayers }: GameProps) => {
     if (checkWinner || diceState.state === "rolling") return;
     // @ts-ignore
     setPlayers((players) => {
-      return updatePlayers(players, col, playerId, dice);
+      const updatedPlayers = updatePlayers(players, col, playerId, dice);
+      socket.emit("placeDice", { updatedPlayers, gameId });
+      return updatedPlayers;
     });
 
     setDiceState((prevState) => {

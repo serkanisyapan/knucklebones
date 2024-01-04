@@ -31,7 +31,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     text: "",
     errorText: "",
   });
-  const isPlayerJoined = checkIsPlayerJoined(id);
+  const isPlayerJoined = checkIsPlayerJoined(id, players);
 
   function getPlayers(state: string) {
     socket.on(state, function (rooms: Rooms) {
@@ -42,7 +42,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   }
 
   function pickPlayerName(playerName: PlayerName) {
-    socket.on("playername_exists", function (data) {
+    socket.on("playername_exists", function () {
       setPlayerName({ text: "", errorText: "Playername already exists." });
     });
     if (playerName.text.length === 0) {
@@ -57,9 +57,8 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     getPlayers("players");
   }
 
-  function checkIsPlayerJoined(id: string) {
-    const checkPlayer = players.find((player) => player.id === id);
-    return checkPlayer;
+  function checkIsPlayerJoined(id: string, players: Player[]) {
+    return players.find((player) => player.id === id);
   }
 
   function savePlayerNameToStorage(name: string) {
@@ -73,12 +72,14 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
   let renderGame = null;
 
   if (players.length === 2) {
-    renderGame = <Game players={players} setPlayers={setPlayers} />;
+    renderGame = (
+      <Game players={players} setPlayers={setPlayers} gameId={gameId} />
+    );
   } else {
     renderGame = (
       <div className="text-white flex flex-col gap-3">
         <ShareLink gameId={gameId} />
-        {isPlayerJoined ? (
+        {isPlayerJoined?.id === id ? (
           <div className="text-lg flex flex-col items-center gap-3">
             <LoadingSpinner />
             <p>Waiting for other player to join to the game...</p>
