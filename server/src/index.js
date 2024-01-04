@@ -84,7 +84,8 @@ io.on("connect", function (socket) {
       updatedPlayers[0].id === playerTurn
         ? updatedPlayers[1].id
         : updatedPlayers[0].id;
-    io.emit("afterPlaceDice", { newPlayerBoards, newPlayerTurn });
+    const newDice = Math.floor(Math.random() * 6) + 1;
+    io.emit("afterPlaceDice", { newPlayerBoards, newPlayerTurn, newDice });
   });
 
   socket.emit("getRooms", rooms);

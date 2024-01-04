@@ -38,10 +38,9 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
     });
   }
 
-  function rollDice() {
+  function rollDice(dice: number) {
     setTimeout(() => {
-      const rollDice = pickRandomDiceNumber();
-      setDice({ dice: rollDice });
+      setDice({ dice: dice });
     }, 500);
   }
 
@@ -57,8 +56,6 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
     setDiceState((prevState) => {
       return { ...prevState, state: "rolling" };
     });
-
-    rollDice();
   }
 
   useEffect(() => {
@@ -91,9 +88,10 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
 
   useEffect(() => {
     socket.on("afterPlaceDice", function (data: any) {
-      const { newPlayerBoards, newPlayerTurn } = data;
+      const { newPlayerBoards, newPlayerTurn, newDice } = data;
       setPlayers(newPlayerBoards.players);
       setPlayerTurn(newPlayerTurn);
+      rollDice(newDice);
     });
   }, [socket, players]);
 
