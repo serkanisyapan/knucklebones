@@ -12,6 +12,7 @@ interface PlayerBoard {
     state: string;
     dice: number;
   };
+  checkWinner: string | undefined;
 }
 
 interface Dice {

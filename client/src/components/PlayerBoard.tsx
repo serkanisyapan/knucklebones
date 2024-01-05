@@ -14,6 +14,7 @@ export const PlayerBoard = ({
   playerTurn,
   placeDice,
   diceState,
+  checkWinner,
 }: BoardType) => {
   const [placeDiceSound, setPlaceDiceSound] = useState<HTMLAudioElement | null>(
     null
@@ -22,7 +23,9 @@ export const PlayerBoard = ({
   const playerScore = calcPlayerScore(player.board);
   const [diceAnimation, enable] = useAutoAnimate({ duration: 120 });
   const checkPlayersTurn =
-    player.playerName !== playerNameOnStorage || playerTurn !== player.id;
+    player.playerName !== playerNameOnStorage ||
+    playerTurn !== player.id ||
+    checkWinner;
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";

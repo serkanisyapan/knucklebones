@@ -64,6 +64,7 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
 
   useEffect(() => {
     if (checkWinner) return;
+    new Audio(rollDiceSound).play();
     let timesRolled = 0;
     function diceRollInterval() {
       timesRolled += 1;
@@ -79,11 +80,6 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
     const rollInterval = setInterval(() => diceRollInterval(), 80);
 
     return () => clearInterval(rollInterval);
-  }, [dice]);
-
-  useEffect(() => {
-    if (checkWinner) return;
-    new Audio(rollDiceSound).play();
   }, [dice]);
 
   useEffect(() => {
@@ -120,6 +116,7 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
               playerTurn={playerTurn}
               player={player}
               diceState={diceState}
+              checkWinner={checkWinner}
             />
           );
         })}
