@@ -18,7 +18,7 @@ const boardStyles: BoardStyleTypes = {
 export const EndScreen = ({ checkWinner, players }: EndScreenProps) => {
   return (
     <div className="flex justify-center items-center flex-col">
-      <p className="text-lg text-white mb-5 text-green-400">{checkWinner}</p>
+      <p className="text-lg mb-5 text-green-400">{checkWinner}</p>
       {players.map((player) => (
         <PlayerBoard
           checkWinner={checkWinner}
