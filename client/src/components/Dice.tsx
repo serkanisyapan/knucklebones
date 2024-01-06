@@ -2,11 +2,12 @@ interface Dice {
   diceNumber: number;
   diceColor: string;
   isRollingDice?: boolean;
-  diceState: {
+  diceState?: {
     state: string;
     dice: number;
   };
   isFirstPlayer?: boolean;
+  diceSize: string;
 }
 
 export const Dice = ({
@@ -15,6 +16,7 @@ export const Dice = ({
   isRollingDice,
   diceState,
   isFirstPlayer,
+  diceSize,
 }: Dice) => {
   const diceClass = checkForRollingDice(isFirstPlayer, isRollingDice);
 
@@ -31,10 +33,10 @@ export const Dice = ({
 
   return (
     <div
-      className={`${diceColor} ${diceClass}
-      select-none h-16 w-16 rounded text-[#2f2417] flex justify-center items-center text-2xl`}
+      className={`${diceColor} ${diceClass} ${diceSize}
+      select-none rounded text-[#2f2417] flex justify-center items-center`}
     >
-      {isRollingDice ? diceState.dice : diceNumber}
+      {isRollingDice && diceState ? diceState.dice : diceNumber}
     </div>
   );
 };

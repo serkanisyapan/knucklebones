@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Dice } from "./Dice";
 import { PlayerBoard } from "./PlayerBoard";
-import { pickRandomDiceNumber } from "../helpers/rollDice";
-import type { BoardState, Player } from "../types/GameTypes";
+import type { BoardState, BoardStyleTypes, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
 import { io } from "socket.io-client";
+import { EndScreen } from "./EndScreen";
 
 interface GameProps {
   players: Player[];
@@ -14,12 +14,16 @@ interface GameProps {
   gameId: string | undefined;
 }
 
-interface Rooms {
-  roomId: string;
-  players: Player[];
-}
-
 const socket = io("http://localhost:3000");
+
+const boardStyles: BoardStyleTypes = {
+  boardFrame: "text-white flex flex-row justify-center mb-5",
+  boardSize: "w-[100px] h-[250px] p-3",
+  diceSize: "w-16 h-16 text-2xl",
+  scoreStyles: "w-[110px] self-center ml-5 text-xl",
+  playerNameStyles: "text-white text-lg w-[300px] text-center",
+  textSize: "text-xl",
+};
 
 export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   const [dice, setDice] = useState({ dice: 0 });
@@ -91,23 +95,23 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
     });
   }, [socket, players]);
 
+  if (checkWinner)
+    return <EndScreen checkWinner={checkWinner} players={players} />;
+
   return (
     <div
       className={`flex flex-row ${
         isFirstPlayer ? "items-end" : "items-start"
       } gap-20`}
     >
-      {checkWinner ? (
-        <div className="w-16 h-16"></div>
-      ) : (
-        <Dice
-          diceColor="bg-[#f2ebcf]"
-          diceState={diceState}
-          diceNumber={dice.dice}
-          isRollingDice={true}
-          isFirstPlayer={isFirstPlayer}
-        />
-      )}
+      <Dice
+        diceColor="bg-[#f2ebcf]"
+        diceState={diceState}
+        diceNumber={dice.dice}
+        isRollingDice={true}
+        isFirstPlayer={isFirstPlayer}
+        diceSize={boardStyles.diceSize}
+      />
       <div className="flex flex-col-reverse items-center gap-20">
         {players.map((player) => {
           return (
@@ -117,6 +121,9 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
               player={player}
               diceState={diceState}
               checkWinner={checkWinner}
+              boardStyles={boardStyles}
+              showScores={true}
+              key={player.id}
             />
           );
         })}

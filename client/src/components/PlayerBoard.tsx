@@ -15,6 +15,8 @@ export const PlayerBoard = ({
   placeDice,
   diceState,
   checkWinner,
+  boardStyles,
+  showScores,
 }: BoardType) => {
   const [placeDiceSound, setPlaceDiceSound] = useState<HTMLAudioElement | null>(
     null
@@ -50,7 +52,7 @@ export const PlayerBoard = ({
 
   return (
     <div>
-      <div className="text-white flex flex-row justify-center mb-5">
+      <div className={`${boardStyles.boardFrame}`}>
         {player.board.map((col, index) => {
           const { dices } = col;
           const getDiceSum = calcColDiceSum(dices);
@@ -58,14 +60,16 @@ export const PlayerBoard = ({
           const checkCols = checkClickableCols(dices, player);
           return (
             <div key={index} className="flex flex-col items-center">
-              <span className="text-xl">{getDiceSum || 0}</span>
+              <span className={`${boardStyles.textSize}`}>
+                {getDiceSum || 0}
+              </span>
               <div
                 onClick={() => {
                   if (dices.length === 3 || checkPlayersTurn) return;
                   if (placeDiceSound) placeDiceSound.play();
-                  placeDice(col, playerTurn);
+                  placeDice && placeDice(col, playerTurn);
                 }}
-                className={`bg-slate-700 border border-black w-[100px] h-[250px] p-3 grid grid-rows-3 justify-center ${boardCorners} ${checkCols}`}
+                className={`bg-slate-700 border border-black grid grid-rows-3 justify-center ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
                 key={index}
                 ref={diceAnimation}
               >
@@ -76,19 +80,20 @@ export const PlayerBoard = ({
                     diceColor={dice.color}
                     isRollingDice={false}
                     diceState={diceState}
+                    diceSize={boardStyles.diceSize}
                   />
                 ))}
               </div>
             </div>
           );
         })}
-        <div className="w-[110px] self-center ml-5 text-xl">
-          Score: {playerScore}
-        </div>
+        {showScores && (
+          <div className={`${boardStyles.scoreStyles}`}>
+            Score: {playerScore}
+          </div>
+        )}
       </div>
-      <p className="text-white text-lg w-[300px] text-center">
-        {player.playerName}
-      </p>
+      <p className={`${boardStyles.playerNameStyles}`}>{player.playerName}</p>
     </div>
   );
 };

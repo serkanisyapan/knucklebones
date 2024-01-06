@@ -6,13 +6,15 @@ interface Player {
 
 interface PlayerBoard {
   player: Player;
-  placeDice: (col: BoardState, playerId: string) => void;
-  playerTurn: string;
-  diceState: {
+  placeDice?: (col: BoardState, playerId: string) => void;
+  playerTurn?: string;
+  diceState?: {
     state: string;
     dice: number;
   };
   checkWinner: string | undefined;
+  boardStyles: BoardStyleTypes;
+  showScores: boolean;
 }
 
 interface Dice {
@@ -25,5 +27,16 @@ interface BoardState {
   score: number;
   dices: Dice[];
 }
+type BoardStyleKeys =
+  | "boardSize"
+  | "diceSize"
+  | "scoreStyles"
+  | "playerNameStyles"
+  | "textSize"
+  | "boardFrame";
 
-export type { Player, PlayerBoard, Dice, BoardState };
+type BoardStyleTypes = {
+  [key in BoardStyleKeys]: string;
+};
+
+export type { Player, PlayerBoard, Dice, BoardState, BoardStyleTypes };
