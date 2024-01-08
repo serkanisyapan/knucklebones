@@ -10,9 +10,9 @@ const boardStyles: BoardStyleTypes = {
   boardFrame: "text-white flex flex-row justify-center",
   boardSize: "w-[70px] h-[200px] p-2",
   diceSize: "w-12 h-12 text-lg",
-  scoreStyles: "w-[110px] self-center ml-5",
-  playerNameStyles: "text-white w-[235px] text-center",
-  textSize: "text-md",
+  scoreStyles: "w-[110px] self-center ml-5 text-xl",
+  playerNameStyles: "text-white text-center mb-4",
+  textSize: "text-base",
 };
 
 export const EndScreen = ({ checkWinner, players }: EndScreenProps) => {
