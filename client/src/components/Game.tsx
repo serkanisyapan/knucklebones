@@ -119,6 +119,7 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
               placeDice={placeDiceToBoard}
               playerTurn={playerTurn}
               player={player}
+              players={players}
               diceState={diceState}
               checkWinner={checkWinner}
               boardStyles={boardStyles}

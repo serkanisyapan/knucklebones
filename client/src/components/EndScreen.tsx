@@ -23,6 +23,7 @@ export const EndScreen = ({ checkWinner, players }: EndScreenProps) => {
         <PlayerBoard
           checkWinner={checkWinner}
           player={player}
+          players={players}
           key={player.id}
           boardStyles={boardStyles}
           showScores={false}

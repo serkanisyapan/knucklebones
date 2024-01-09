@@ -6,6 +6,7 @@ interface Player {
 
 interface PlayerBoard {
   player: Player;
+  players: Player[];
   placeDice?: (col: BoardState, playerId: string) => void;
   playerTurn?: string;
   diceState?: {

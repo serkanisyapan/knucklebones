@@ -6,11 +6,11 @@ import placeSound from "../assets/placeDice.mp3";
 import type {
   PlayerBoard as BoardType,
   Dice as DiceType,
-  Player,
 } from "../types/GameTypes";
 
 export const PlayerBoard = ({
   player,
+  players,
   playerTurn,
   placeDice,
   diceState,
@@ -28,13 +28,14 @@ export const PlayerBoard = ({
     player.playerName !== playerNameOnStorage ||
     playerTurn !== player.id ||
     checkWinner;
+  const isSecondPlayer = player.id === players[1].id
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";
     if (index === 2) return "rounded-tr-md rounded-br-md";
   }
 
-  function checkClickableCols(dices: DiceType[], player: Player) {
+  function checkClickableCols(dices: DiceType[]) {
     if (checkPlayersTurn) return "hover:cursor-not-allowed hover:bg-slate-700";
     if (dices.length < 3) return "hover:bg-slate-600 hover:cursor-pointer";
   }
@@ -57,7 +58,7 @@ export const PlayerBoard = ({
           const { dices } = col;
           const getDiceSum = calcColDiceSum(dices);
           const boardCorners = boardCornersRounded(index);
-          const checkCols = checkClickableCols(dices, player);
+          const checkCols = checkClickableCols(dices);
           return (
             <div key={index} className="flex flex-col items-center">
               <span className={`${boardStyles.textSize}`}>
@@ -69,7 +70,7 @@ export const PlayerBoard = ({
                   if (placeDiceSound) placeDiceSound.play();
                   placeDice && placeDice(col, playerTurn);
                 }}
-                className={`bg-slate-700 border border-black grid grid-rows-3 justify-center ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
+                className={`bg-slate-700 border border-black flex gap-4 items-center ${isSecondPlayer ? "flex-col-reverse" : "flex-col"} ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
                 key={index}
                 ref={diceAnimation}
               >
