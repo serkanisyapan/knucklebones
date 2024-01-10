@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "NODE_ENV=production node index.js"
   },
   "dependencies": {
     "socket.io": "^4.7.2"

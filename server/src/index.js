@@ -1,8 +1,10 @@
 import { Server } from "socket.io";
 
+const origin = process.env.CLIENT_URL || "http://localhost:4321"
+
 const io = new Server({
   cors: {
-    origin: "http://localhost:4321",
+    origin
   },
 });
 
