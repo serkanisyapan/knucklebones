@@ -1,10 +1,17 @@
 import { Server } from "socket.io";
+import http from "http";
 
-const origin = process.env.CLIENT_URL || "http://localhost:4321"
+const origin = process.env.CLIENT_URL || "http://localhost:4321";
+
+// adaptable setup
+const port = 3001;
+const server = http.createServer();
+server.listen(port);
+// adaptable setup
 
 const io = new Server({
   cors: {
-    origin
+    origin,
   },
 });
 
