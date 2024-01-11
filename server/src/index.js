@@ -3,12 +3,13 @@ import { Server } from "socket.io";
 
 const origin = "http://localhost:4321";
 const httpServer = createServer();
+const port = process.env.PORT || 3001;
 const io = new Server(httpServer, {
   cors: {
     origin,
   },
 });
-httpServer.listen(3000);
+httpServer.listen(port);
 
 const rooms = {};
 
