@@ -1,21 +1,14 @@
+import { createServer } from "http";
 import { Server } from "socket.io";
-import http from "http";
 
-const origin = process.env.CLIENT_URL || "http://localhost:4321";
-
-// adaptable setup
-const port = process.env.PORT || 3001;
-const server = http.createServer();
-server.listen(port);
-// adaptable setup
-
-const io = new Server({
+const origin = "http://localhost:4321";
+const httpServer = createServer();
+const io = new Server(httpServer, {
   cors: {
     origin,
   },
 });
-
-io.listen(3000);
+httpServer.listen(3000);
 
 const rooms = {};
 

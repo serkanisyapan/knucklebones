@@ -6,7 +6,7 @@ import { ShareLink } from "./ShareLink";
 import { v4 as uuidv4 } from "uuid";
 import { LoadingSpinner } from "./LoadingSpinner";
 
-const socket = io("https://knucklebones-server.2.ie-1.fl0.io");
+const socket = io("http://localhost:3000");
 const id = uuidv4();
 
 interface PlayerName {
