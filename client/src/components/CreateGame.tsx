@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import { navigate } from "astro:transitions/client";
 import { useState } from "react";
 import { HowtoPlay } from "./HowtoPlay";
-const socket = io(import.meta.env.BASE_URL || "http://localhost:3000");
+const socket = io("https://knucklebones-server.2.ie-1.fl0.io");
 
 export const CreateGame = () => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);

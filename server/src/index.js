@@ -4,7 +4,7 @@ import http from "http";
 const origin = process.env.CLIENT_URL || "http://localhost:4321";
 
 // adaptable setup
-const port = 3001;
+const port = process.env.PORT || 3001;
 const server = http.createServer();
 server.listen(port);
 // adaptable setup
