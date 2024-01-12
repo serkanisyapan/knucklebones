@@ -1,9 +1,11 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
+import dotenv from "dotenv";
+dotenv.config();
 
 const origin = "http://localhost:4321";
 const httpServer = createServer();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 const io = new Server(httpServer, {
   cors: {
     origin,
