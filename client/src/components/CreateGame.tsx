@@ -3,7 +3,6 @@ import { navigate } from "astro:transitions/client";
 import { useState } from "react";
 import { HowtoPlay } from "./HowtoPlay";
 const socket = io(import.meta.env.PUBLIC_SOCKET_SERVER);
-console.log(import.meta.env.PUBLIC_SOCKET_SERVER);
 
 export const CreateGame = () => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
