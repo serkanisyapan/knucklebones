@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import dotenv from "dotenv";
 dotenv.config();
 
-const origin = process.env.CLIENT_URL || "http://localhost:4321";
+const origin = process.env.CLIENT_URL 
 const httpServer = createServer();
 const port = process.env.PORT;
 const io = new Server(httpServer, {

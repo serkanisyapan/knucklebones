@@ -14,9 +14,7 @@ interface GameProps {
   gameId: string | undefined;
 }
 
-const socket = io(
-  import.meta.env.BASE_URL || "https://knucklebones-server.adaptable.app"
-);
+const socket = io(import.meta.env.BASE_URL);
 
 const boardStyles: BoardStyleTypes = {
   boardFrame: "text-white flex flex-row justify-center mb-5",
