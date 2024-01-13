@@ -1,21 +1,17 @@
 import { Server } from "socket.io";
-import http from "http";
+import dotenv from "dotenv";
+dotenv.config();
 
-const origin = process.env.CLIENT_URL || "http://localhost:4321";
-
-// adaptable setup
-const port = process.env.PORT || 3001;
-const server = http.createServer();
-server.listen(port);
-// adaptable setup
-
+// io server
+const clientURL = process.env.CLIENT_URL;
+const port = process.env.PORT;
 const io = new Server({
   cors: {
-    origin,
+    origin: clientURL,
   },
 });
-
-io.listen(3000);
+io.listen(port);
+// io server
 
 const rooms = {};
 

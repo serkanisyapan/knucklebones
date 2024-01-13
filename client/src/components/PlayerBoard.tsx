@@ -1,7 +1,6 @@
 import { Dice } from "./Dice";
 import { calcColDiceSum, calcPlayerScore } from "../helpers/diceCalculations";
 import { useEffect, useState } from "react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import placeSound from "../assets/placeDice.mp3";
 import type {
   PlayerBoard as BoardType,
@@ -23,12 +22,11 @@ export const PlayerBoard = ({
   );
   const [playerNameOnStorage, setPlayerNameOnStorage] = useState<string>("");
   const playerScore = calcPlayerScore(player.board);
-  const [diceAnimation, enable] = useAutoAnimate({ duration: 120 });
   const checkPlayersTurn =
     player.playerName !== playerNameOnStorage ||
     playerTurn !== player.id ||
     checkWinner;
-  const isSecondPlayer = player.id === players[1].id
+  const isSecondPlayer = player.id === players[1].id;
 
   function boardCornersRounded(index: number) {
     if (index === 0) return "rounded-tl-md rounded-bl-md";
@@ -70,9 +68,10 @@ export const PlayerBoard = ({
                   if (placeDiceSound) placeDiceSound.play();
                   placeDice && placeDice(col, playerTurn);
                 }}
-                className={`bg-slate-700 border border-black flex gap-4 items-center ${isSecondPlayer ? "flex-col-reverse" : "flex-col"} ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
+                className={`bg-slate-700 border border-black flex gap-4 items-center ${
+                  isSecondPlayer ? "flex-col-reverse" : "flex-col"
+                } ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
                 key={index}
-                ref={diceAnimation}
               >
                 {dices.map((dice, idx) => (
                   <Dice

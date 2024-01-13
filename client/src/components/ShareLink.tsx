@@ -32,7 +32,7 @@ export const ShareLink = ({ gameId }: ShareLinkProps) => {
             switchText();
           }}
         >
-          http://localhost:4321/games/{gameId}
+          https://knucklebones-multiplayer.netlify.app/games/{gameId}
         </p>
         <p id="copy-text" className={showCopied ? "opacity-100" : "opacity-0"}>
           Copied!
