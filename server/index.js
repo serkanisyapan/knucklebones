@@ -1,17 +1,17 @@
-import { createServer } from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 dotenv.config();
 
-const origin = process.env.CLIENT_URL;
-const httpServer = createServer();
+// io server
+const clientURL = process.env.CLIENT_URL;
 const port = process.env.PORT;
-const io = new Server(httpServer, {
+const io = new Server({
   cors: {
-    origin,
+    origin: clientURL,
   },
 });
-httpServer.listen(port);
+io.listen(port);
+// io server
 
 const rooms = {};
 
