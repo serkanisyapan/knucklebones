@@ -21,11 +21,11 @@ const playerBoard = [
   { id: 2, score: 0, dices: [] },
 ];
 
-function createNewRoom(roomId) {
+function createNewRoom(roomId, players = []) {
   if (Object.hasOwn(rooms, roomId)) return;
   rooms[roomId] = {
     roomId,
-    players: [],
+    players,
   };
 }
 
@@ -38,7 +38,6 @@ function joinRoom(playerName, gameId, socketId, socket) {
     const checkName = checkPlayernameExistInRoom(findRoom, playerName);
     if (checkName) {
       socket.emit("playername_exists", "this playername already exists");
-      return;
     } else {
       findRoom.players.push({
         id: socketId,
@@ -57,8 +56,7 @@ function placeDice(gameId, players) {
 }
 
 function diceRoll() {
-  const diceRoll = Math.floor(Math.random() * 6) + 1;
-  return diceRoll;
+  return Math.floor(Math.random() * 6) + 1;
 }
 
 function checkPlayernameExistInRoom(room, name) {
@@ -74,12 +72,16 @@ io.on("connect", function (socket) {
   socket.on("joinGame", function (data) {
     const { gameId, playerName, id } = data;
     joinRoom(playerName, gameId, id, socket);
-    io.emit("players", rooms);
+    io.to(gameId).emit("players", rooms);
   });
 
-  socket.on("rollDice", function () {
+  socket.on("joinRoom", function (gameId) {
+    socket.join(gameId);
+  });
+
+  socket.on("rollDice", function (gameId) {
     const dice = diceRoll();
-    io.emit("rolledDice", dice);
+    io.to(gameId).emit("rolledDice", dice);
   });
 
   socket.on("placeDice", function (data) {
@@ -90,17 +92,21 @@ io.on("connect", function (socket) {
         ? updatedPlayers[1].id
         : updatedPlayers[0].id;
     const newDice = Math.floor(Math.random() * 6) + 1;
-    io.emit("afterPlaceDice", { newPlayerBoards, newPlayerTurn, newDice });
+    io.to(gameId).emit("afterPlaceDice", {
+      newPlayerBoards,
+      newPlayerTurn,
+      newDice,
+    });
+  });
+
+  socket.on("clickRematch", function (data) {
+    const { gameId, clickedRematch } = data;
+    io.to(gameId).emit("clickedRematch", clickedRematch);
   });
 
   socket.emit("getRooms", rooms);
 
-  socket.on("disconnect", function () {
-    console.log("disconnected", socket.id);
-    // players.splice(
-    //   players.findIndex((player) => player.id === socket.id),
-    //   1
-    // );
-    // io.emit("players", players);
+  socket.on("endGame", function (gameId) {
+    delete rooms[gameId];
   });
 });

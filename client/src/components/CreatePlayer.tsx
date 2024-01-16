@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { socket } from "../helpers/socketManager";
 import type { Player } from "../types/GameTypes";
 import { Game } from "./Game";
 import { ShareLink } from "./ShareLink";
 import { v4 as uuidv4 } from "uuid";
 import { LoadingSpinner } from "./LoadingSpinner";
 
-const socket = io(import.meta.env.PUBLIC_SOCKET_SERVER);
 const id = uuidv4();
 
 interface PlayerName {
@@ -52,6 +51,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       });
       return;
     }
+    socket.emit("joinRoom", gameId);
     socket.emit("joinGame", { gameId, playerName: playerName.text, id });
     savePlayerNameToStorage(playerName.text);
     getPlayers("players");

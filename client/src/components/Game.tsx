@@ -5,7 +5,7 @@ import type { BoardState, BoardStyleTypes, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
-import { io } from "socket.io-client";
+import { socket } from "../helpers/socketManager";
 import { EndScreen } from "./EndScreen";
 
 interface GameProps {
@@ -13,8 +13,6 @@ interface GameProps {
   setPlayers: (players: Player[]) => void;
   gameId: string | undefined;
 }
-
-const socket = io(import.meta.env.PUBLIC_SOCKET_SERVER);
 
 const boardStyles: BoardStyleTypes = {
   boardFrame: "text-white flex flex-row justify-center mb-5",
@@ -36,7 +34,7 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   const isFirstPlayer = playerTurn === players[0].id;
 
   function rollFirstDice() {
-    socket.emit("rollDice");
+    socket.emit("rollDice", gameId);
     socket.on("rolledDice", function (diceNumber: number) {
       setDice({ dice: diceNumber });
     });
@@ -67,7 +65,10 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   }, []);
 
   useEffect(() => {
-    if (checkWinner) return;
+    if (checkWinner) {
+      socket.emit("endGame", gameId);
+      return;
+    }
     new Audio(rollDiceSound).play();
     let timesRolled = 0;
     function diceRollInterval() {
@@ -96,7 +97,9 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
   }, [socket, players]);
 
   if (checkWinner)
-    return <EndScreen checkWinner={checkWinner} players={players} />;
+    return (
+      <EndScreen checkWinner={checkWinner} players={players} gameId={gameId} />
+    );
 
   return (
     <div
