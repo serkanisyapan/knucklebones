@@ -104,6 +104,11 @@ io.on("connect", function (socket) {
     io.to(gameId).emit("clickedRematch", clickedRematch);
   });
 
+  socket.on("startRematch", function (data) {
+    const { gameId, rematchPlayers } = data;
+    io.to(gameId).emit("rematch", rematchPlayers);
+  });
+
   socket.emit("getRooms", rooms);
 
   socket.on("endGame", function (gameId) {

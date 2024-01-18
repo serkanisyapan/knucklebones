@@ -5,6 +5,7 @@ import { Game } from "./Game";
 import { ShareLink } from "./ShareLink";
 import { v4 as uuidv4 } from "uuid";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { resetPlayers } from "../helpers/updatePlayers";
 
 const id = uuidv4();
 
@@ -65,6 +66,16 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     localStorage.setItem("playerName", name);
   }
 
+  function startRematch() {
+    socket.emit("createGame", gameId);
+    setPlayers((prevPlayers) => {
+      const rematchPlayers = resetPlayers(prevPlayers);
+      socket.emit("joinGame", gameId);
+      socket.emit("startRematch", { gameId, rematchPlayers });
+      return rematchPlayers;
+    });
+  }
+
   useEffect(() => {
     getPlayers("getRooms");
   }, [socket]);
@@ -73,7 +84,12 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
 
   if (players.length === 2) {
     renderGame = (
-      <Game players={players} setPlayers={setPlayers} gameId={gameId} />
+      <Game
+        players={players}
+        setPlayers={setPlayers}
+        gameId={gameId}
+        startRematch={startRematch}
+      />
     );
   } else {
     renderGame = (

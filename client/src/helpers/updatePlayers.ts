@@ -8,6 +8,12 @@ interface Dice {
   dice: number;
 }
 
+const playerBoard = [
+  { id: 0, score: 0, dices: [] },
+  { id: 1, score: 0, dices: [] },
+  { id: 2, score: 0, dices: [] },
+];
+
 function updatePlayers(
   players: Player[],
   col: BoardState,
@@ -34,4 +40,11 @@ function updatePlayers(
   return updatedPlayers;
 }
 
-export { updatePlayers };
+function resetPlayers(players: Player[]) {
+  const rematchPlayers = players.map((player) => {
+    return { ...player, board: playerBoard };
+  });
+  return rematchPlayers;
+}
+
+export { updatePlayers, resetPlayers };
