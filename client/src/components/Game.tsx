@@ -5,16 +5,15 @@ import type { BoardState, BoardStyleTypes, Player } from "../types/GameTypes";
 import { checkWinningCondition } from "../helpers/checkWinningCondition";
 import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
-import { io } from "socket.io-client";
+import { socket } from "../helpers/socketManager";
 import { EndScreen } from "./EndScreen";
 
 interface GameProps {
   players: Player[];
   setPlayers: (players: Player[]) => void;
   gameId: string | undefined;
+  startRematch: () => void;
 }
-
-const socket = io(import.meta.env.PUBLIC_SOCKET_SERVER);
 
 const boardStyles: BoardStyleTypes = {
   boardFrame: "text-white flex flex-row justify-center mb-5",
@@ -25,18 +24,24 @@ const boardStyles: BoardStyleTypes = {
   textSize: "text-xl",
 };
 
-export const Game = ({ players, setPlayers, gameId }: GameProps) => {
+export const Game = ({
+  players,
+  setPlayers,
+  gameId,
+  startRematch,
+}: GameProps) => {
   const [dice, setDice] = useState({ dice: 0 });
   const [diceState, setDiceState] = useState({
     state: "rolling",
     dice: 0,
   });
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
+  const [playerRematch, setPlayerRematch] = useState<number>(0);
   const checkWinner = checkWinningCondition(players);
   const isFirstPlayer = playerTurn === players[0].id;
 
   function rollFirstDice() {
-    socket.emit("rollDice");
+    socket.emit("rollDice", gameId);
     socket.on("rolledDice", function (diceNumber: number) {
       setDice({ dice: diceNumber });
     });
@@ -56,18 +61,32 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
       socket.emit("placeDice", { updatedPlayers, gameId, playerTurn });
       return updatedPlayers;
     });
-
     setDiceState((prevState) => {
       return { ...prevState, state: "rolling" };
     });
   }
 
-  useEffect(() => {
-    rollFirstDice();
-  }, []);
+  function handleRematch() {
+    setPlayerRematch((prev) => {
+      const clickedRematch = prev + 1;
+      socket.emit("clickRematch", { gameId, clickedRematch });
+      if (clickedRematch === 2) {
+        socket.emit("clickRematch", { gameId, clickedRematch: 0 });
+        startRematch();
+      }
+      return clickedRematch;
+    });
+  }
 
   useEffect(() => {
-    if (checkWinner) return;
+    rollFirstDice();
+  }, [checkWinner]);
+
+  useEffect(() => {
+    if (checkWinner) {
+      socket.emit("endGame", gameId);
+      return;
+    }
     new Audio(rollDiceSound).play();
     let timesRolled = 0;
     function diceRollInterval() {
@@ -93,10 +112,25 @@ export const Game = ({ players, setPlayers, gameId }: GameProps) => {
       setPlayerTurn(newPlayerTurn);
       rollDice(newDice);
     });
-  }, [socket, players]);
+
+    socket.on("clickedRematch", function (clickCount: number) {
+      setPlayerRematch(clickCount);
+    });
+
+    socket.on("rematch", function (players: Player[]) {
+      setPlayers(players);
+    });
+  }, [socket]);
 
   if (checkWinner)
-    return <EndScreen checkWinner={checkWinner} players={players} />;
+    return (
+      <EndScreen
+        checkWinner={checkWinner}
+        players={players}
+        handleRematch={handleRematch}
+        playerRematch={playerRematch}
+      />
+    );
 
   return (
     <div

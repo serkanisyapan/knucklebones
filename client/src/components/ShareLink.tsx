@@ -4,6 +4,8 @@ interface ShareLinkProps {
   gameId: string | undefined;
 }
 
+const BASE_URL = import.meta.env.PUBLIC_BASE_URL;
+
 export const ShareLink = ({ gameId }: ShareLinkProps) => {
   const linkText = useRef<HTMLParagraphElement>(null);
   const [showCopied, setShowCopied] = useState(false);
@@ -32,7 +34,7 @@ export const ShareLink = ({ gameId }: ShareLinkProps) => {
             switchText();
           }}
         >
-          https://knucklebones-multiplayer.netlify.app/games/{gameId}
+          {BASE_URL}/games/{gameId}
         </p>
         <p id="copy-text" className={showCopied ? "opacity-100" : "opacity-0"}>
           Copied!

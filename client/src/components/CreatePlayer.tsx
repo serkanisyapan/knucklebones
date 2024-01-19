@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { socket } from "../helpers/socketManager";
 import type { Player } from "../types/GameTypes";
 import { Game } from "./Game";
 import { ShareLink } from "./ShareLink";
 import { v4 as uuidv4 } from "uuid";
 import { LoadingSpinner } from "./LoadingSpinner";
+import { resetPlayers } from "../helpers/updatePlayers";
 
-const socket = io(import.meta.env.PUBLIC_SOCKET_SERVER);
 const id = uuidv4();
 
 interface PlayerName {
@@ -52,6 +52,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
       });
       return;
     }
+    socket.emit("joinRoom", gameId);
     socket.emit("joinGame", { gameId, playerName: playerName.text, id });
     savePlayerNameToStorage(playerName.text);
     getPlayers("players");
@@ -65,6 +66,16 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     localStorage.setItem("playerName", name);
   }
 
+  function startRematch() {
+    socket.emit("createGame", gameId);
+    setPlayers((prevPlayers) => {
+      const rematchPlayers = resetPlayers(prevPlayers);
+      socket.emit("joinGame", gameId);
+      socket.emit("startRematch", { gameId, rematchPlayers });
+      return rematchPlayers;
+    });
+  }
+
   useEffect(() => {
     getPlayers("getRooms");
   }, [socket]);
@@ -73,7 +84,12 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
 
   if (players.length === 2) {
     renderGame = (
-      <Game players={players} setPlayers={setPlayers} gameId={gameId} />
+      <Game
+        players={players}
+        setPlayers={setPlayers}
+        gameId={gameId}
+        startRematch={startRematch}
+      />
     );
   } else {
     renderGame = (
