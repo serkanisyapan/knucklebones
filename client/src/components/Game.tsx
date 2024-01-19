@@ -80,7 +80,7 @@ export const Game = ({
 
   useEffect(() => {
     rollFirstDice();
-  }, []);
+  }, [checkWinner]);
 
   useEffect(() => {
     if (checkWinner) {
