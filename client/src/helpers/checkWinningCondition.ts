@@ -8,11 +8,23 @@ function checkWinningCondition(players: Player[]) {
     return { isBoardFull, playerScore };
   });
   for (let i = 0; i < checkWinner.length; i++) {
+    const firstPlayer = {
+      score: checkWinner[0].playerScore,
+      name: players[0].playerName,
+    };
+    const secondPlayer = {
+      score: checkWinner[1].playerScore,
+      name: players[1].playerName,
+    };
+
     if (checkWinner[i].isBoardFull) {
-      if (checkWinner[0].playerScore > checkWinner[1].playerScore)
-        return `${players[0].playerName} wins with a score of ${checkWinner[0].playerScore}`;
-      if (checkWinner[0].playerScore < checkWinner[1].playerScore)
-        return `${players[1].playerName} wins with a score of ${checkWinner[1].playerScore}`;
+      if (firstPlayer.score > secondPlayer.score)
+        return `${firstPlayer.name} wins with a score of ${firstPlayer.score}`;
+      if (firstPlayer.score < secondPlayer.score)
+        return `${secondPlayer.name} wins with a score of ${secondPlayer.score}`;
+      if (firstPlayer.score === secondPlayer.score) {
+        return "Roll-off results in a draw!";
+      }
     }
   }
 }
