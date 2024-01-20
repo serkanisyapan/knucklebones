@@ -1,3 +1,6 @@
+import { Image } from "astro:assets";
+import knucklebonesLogo from "../../knucklebones-logo.png";
+
 const diceCombination = [
   [1, 4, 9],
   [2, 8, 18],
@@ -28,11 +31,10 @@ const Die = ({ color }: DieProps) => {
 const BonesImage = () => {
   return (
     <img
-      width={60}
-      height={60}
-      className="object-cover"
-      src="../../public/knucklebones-logo.png"
+      src={knucklebonesLogo.src}
       alt="knucklebones game logo"
+      height={60}
+      width={60}
     />
   );
 };
@@ -42,23 +44,21 @@ export const HowtoPlay = ({ handleShowRules }: HowtoPlayProps) => {
     <div className="text-white w-[460px]">
       <p
         onClick={() => handleShowRules()}
-        className="hover:cursor-pointer hover:underline mb-2"
+        className="hover:cursor-pointer hover:underline"
       >
         Back
       </p>
-      <div className="flex justify-between">
+      <h2 className="text-3xl text-red-400 text-center mb-2">HOW TO PLAY</h2>
+      <div className="flex justify-between mb-3">
         <BonesImage />
         <h1 className="text-5xl text-center mb-3">KNUCKLEBONES</h1>
         <BonesImage />
       </div>
-      <h2 className="text-3xl text-center text-red-400 mb-3">HOW TO PLAY</h2>
-
-      <p className="text-center">
+      <p className="mb-3">
         Your score is calculated by adding <br /> the values of your dice
         together.
       </p>
-
-      <div className="flex justify-between mb-5 mt-8">
+      <div className="flex justify-between mb-5">
         <div>
           <h3 className="text-2xl text-red-400">DESTROY OPPONENT'S DICE</h3>
           <p>
