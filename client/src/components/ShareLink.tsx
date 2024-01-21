@@ -18,12 +18,12 @@ export const ShareLink = ({ gameId }: ShareLinkProps) => {
   }
 
   return (
-    <div className="text-white mb-8">
+    <div className="text-white mb-5">
       <h1 className="text-xl mb-2">
         Share the link below with your friend to play! <br />
         And pick your username to start!
       </h1>
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-3">
         <p
           id="link-text"
           className="cursor-pointer"

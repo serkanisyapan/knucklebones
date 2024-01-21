@@ -93,13 +93,12 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     );
   } else {
     renderGame = (
-      <div className="text-white flex flex-col gap-3">
+      <div className="text-white flex flex-col">
         <ShareLink gameId={gameId} />
         {isPlayerJoined?.id === id ? (
-          <div className="text-lg flex flex-col items-center gap-3">
+          <div className="text-lg gap-3 flex flex-row items-center">
             <LoadingSpinner />
-            <p>Waiting for other player to join to the game...</p>
-            <p>1 / 2</p>
+            <p>Waiting for other player to join...</p>
           </div>
         ) : (
           <div className="flex gap-4">
