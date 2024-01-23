@@ -19,24 +19,18 @@ export const CreateGame = () => {
   if (showHowToPlay) return <HowtoPlay handleShowRules={handleShowRules} />;
 
   return (
-    <div className="text-white">
-      <div className="flex mb-8 gap-3 flex-col">
-        <h1 className="text-2xl">Play Knucklebones</h1>
-        <h3 className="text-lg">
-          Play the Knucklebones game from the "Cult of The Lamb" game with your
-          friends
-        </h3>
-      </div>
-      <div className="flex flex-col gap-3 w-2/5">
+    <div className="text-white text-center flex flex-col items-center">
+      <h1 className="text-7xl mb-10">KNUCKLEBONES</h1>
+      <div className="flex flex-col gap-3 w-2/3">
         <button
           onClick={() => createNewGame()}
-          className="bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg px-5 py-2.5 me-2 mb-2"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
-          Play against your friend
+          Play against a friend
         </button>
         <button
           onClick={() => handleShowRules()}
-          className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-amber-300 dark:focus:ring-amber-800 font-medium rounded-lg px-5 py-2.5 me-2 mb-2"
+          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
         >
           How to play?
         </button>

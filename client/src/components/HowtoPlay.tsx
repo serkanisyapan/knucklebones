@@ -1,4 +1,3 @@
-import { Image } from "astro:assets";
 import knucklebonesLogo from "../../knucklebones-logo.png";
 
 const diceCombination = [
