@@ -5,5 +5,5 @@ const { gameId } = Astro.params
 ---
 
 <Layout title="knucklebones game">
-    <CreatePlayer gameId={gameId} client:load/>
+    <CreatePlayer gameId={gameId} client:only="react"/>
 </Layout>
