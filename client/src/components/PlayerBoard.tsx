@@ -6,6 +6,7 @@ import type {
   PlayerBoard as BoardType,
   Dice as DiceType,
 } from "../types/GameTypes";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export const PlayerBoard = ({
   player,
@@ -21,6 +22,7 @@ export const PlayerBoard = ({
     null
   );
   const [playerNameOnStorage, setPlayerNameOnStorage] = useState<string>("");
+  const [parent, _] = useAutoAnimate({ duration: 150 });
   const playerScore = calcPlayerScore(player.board);
   const checkPlayersTurn =
     player.playerName !== playerNameOnStorage ||
@@ -72,6 +74,7 @@ export const PlayerBoard = ({
                   isSecondPlayer ? "flex-col-reverse" : "flex-col"
                 } ${boardCorners} ${checkCols} ${boardStyles.boardSize}`}
                 key={index}
+                ref={parent}
               >
                 {dices.map((dice, idx) => (
                   <Dice
