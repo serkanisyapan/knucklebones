@@ -7,6 +7,9 @@ import rollDiceSound from "../assets/dice.mp3";
 import { updatePlayers } from "../helpers/updatePlayers";
 import { socket } from "../helpers/socketManager";
 import { EndScreen } from "./EndScreen";
+import { HowtoPlay } from "./HowtoPlay";
+import knucklebonesLogo from "../../knucklebones-logo.png";
+import { QuestionMark } from "./QuestionMark";
 
 interface GameProps {
   players: Player[];
@@ -37,8 +40,13 @@ export const Game = ({
   });
   const [playerTurn, setPlayerTurn] = useState(players[0].id);
   const [playerRematch, setPlayerRematch] = useState<number>(0);
+  const [showHowtoPlay, setShowHowtoPlay] = useState(false);
   const checkWinner = checkWinningCondition(players);
   const isFirstPlayer = playerTurn === players[0].id;
+
+  function handleHowtoPlay() {
+    setShowHowtoPlay((show) => !show);
+  }
 
   function rollFirstDice() {
     socket.emit("rollDice", gameId);
@@ -133,36 +141,59 @@ export const Game = ({
     );
 
   return (
-    <div
-      className={`flex flex-row ${
-        isFirstPlayer ? "items-end" : "items-start"
-      } gap-20`}
-    >
-      <Dice
-        diceColor="bg-[#f2ebcf]"
-        diceState={diceState}
-        diceNumber={dice.dice}
-        isRollingDice={true}
-        isFirstPlayer={isFirstPlayer}
-        diceSize={boardStyles.diceSize}
-      />
-      <div className="flex flex-col-reverse items-center gap-20">
-        {players.map((player) => {
-          return (
-            <PlayerBoard
-              placeDice={placeDiceToBoard}
-              playerTurn={playerTurn}
-              player={player}
-              players={players}
-              diceState={diceState}
-              checkWinner={checkWinner}
-              boardStyles={boardStyles}
-              showScores={true}
-              key={player.id}
-            />
-          );
-        })}
+    <>
+      <div className="fixed top-0 left-0 text-white p-3 h-1/2 flex flex-col justify-between">
+        <div className="flex gap-3">
+          <img
+            src={knucklebonesLogo.src}
+            alt="knucklebones-logo"
+            width={30}
+            height={30}
+            className="object-contain"
+          />
+          <a className="text-3xl" href="/">
+            Knucklebones
+          </a>
+        </div>
+        <div className="flex gap-3">
+          <QuestionMark />
+          <button className="text-xl" onClick={() => handleHowtoPlay()}>
+            How to Play
+          </button>
+        </div>
       </div>
-    </div>
+      {showHowtoPlay && <HowtoPlay handleShowRules={handleHowtoPlay} />}
+      <div
+        className={`flex flex-row ${
+          isFirstPlayer ? "items-end" : "items-start"
+        } gap-20`}
+      >
+        <Dice
+          diceColor="bg-[#f2ebcf]"
+          diceState={diceState}
+          diceNumber={dice.dice}
+          isRollingDice={true}
+          isFirstPlayer={isFirstPlayer}
+          diceSize={boardStyles.diceSize}
+        />
+        <div className="flex flex-col-reverse items-center gap-20">
+          {players.map((player) => {
+            return (
+              <PlayerBoard
+                placeDice={placeDiceToBoard}
+                playerTurn={playerTurn}
+                player={player}
+                players={players}
+                diceState={diceState}
+                checkWinner={checkWinner}
+                boardStyles={boardStyles}
+                showScores={true}
+                key={player.id}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 };
