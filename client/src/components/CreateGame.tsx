@@ -2,14 +2,15 @@ import { socket } from "../helpers/socketManager";
 import { navigate } from "astro:transitions/client";
 import { useState } from "react";
 import { HowtoPlay } from "./HowtoPlay";
+import { v4 as uuidv4 } from "uuid";
 
 export const CreateGame = () => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
 
   function createNewGame() {
-    const socketId = socket.id;
-    socket.emit("createGame", socketId);
-    navigate(`/games/${socketId}`);
+    const gameId = uuidv4();
+    socket.emit("createGame", gameId);
+    navigate(`/games/${gameId}`);
   }
 
   function handleShowRules() {
