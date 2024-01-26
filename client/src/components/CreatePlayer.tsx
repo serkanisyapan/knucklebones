@@ -15,7 +15,7 @@ interface PlayerName {
 }
 
 interface CreatePlayer {
-  gameId: string | undefined;
+  gameId: string;
 }
 
 interface Rooms {

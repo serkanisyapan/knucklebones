@@ -7,8 +7,15 @@ import { v4 as uuidv4 } from "uuid";
 export const CreateGame = () => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
 
+  function getRoomId() {
+    if (!socket.connected) {
+      return undefined;
+    }
+    return uuidv4();
+  }
+
   function createNewGame() {
-    const gameId = uuidv4();
+    const gameId = getRoomId();
     socket.emit("createGame", gameId);
     navigate(`/games/${gameId}`);
   }

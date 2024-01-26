@@ -1,9 +1,20 @@
 ---
-import { CreatePlayer } from "../../components/CreatePlayer";
 import Layout from "../../layouts/Layout.astro";
+import InvalidRoom from "../../components/InvalidRoom.astro"
+import { CreatePlayer } from "../../components/CreatePlayer";
+import { validate } from "uuid";
 const { gameId } = Astro.params
+if (!gameId) return;
+const validateGameId = validate(gameId)
 ---
 
-<Layout title="knucklebones game">
-    <CreatePlayer gameId={gameId} client:only="react"/>
-</Layout>
+{
+    validateGameId ?
+    <Layout title="Knucklebones">
+        <CreatePlayer gameId={gameId} client:only="react"/>
+    </Layout> :
+    <Layout title="Knucklebones">
+        <InvalidRoom/>
+    </Layout>
+
+}
