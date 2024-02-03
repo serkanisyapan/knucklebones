@@ -41,7 +41,7 @@ const BonesImage = () => {
 export const HowtoPlay = ({ handleShowRules }: HowtoPlayProps) => {
   return (
     <div className="fixed bg-white bg-opacity-10 w-full h-full top-0 left-0 flex items-center justify-center p-7 z-10">
-      <div className="text-white w-[520px] h-[] bg-[#0f172a] p-5 rounded-md ">
+      <div className="text-white p-5 rounded-md ">
         <button
           onClick={() => handleShowRules()}
           className="hover:cursor-pointer hover:underline"
