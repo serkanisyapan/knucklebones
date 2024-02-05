@@ -37,8 +37,7 @@ export const CreatePlayer = ({ gameId }: CreatePlayer) => {
     socket.on(state, function (rooms: Rooms) {
       if (!gameId) return;
       const findRoom = rooms[gameId];
-      const shufflePlayers = findRoom.players.sort(() => 0.5 - Math.random());
-      setPlayers(shufflePlayers);
+      setPlayers(findRoom.players);
     });
   }
 
