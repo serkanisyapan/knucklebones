@@ -8,8 +8,8 @@ export const QuestionMark = () => {
       fill="#ffffff"
       stroke="#ffffff"
     >
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-      <g stroke-linecap="round" stroke-linejoin="round"></g>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+      <g strokeLinecap="round" strokeLinejoin="round"></g>
       <g>
         {" "}
         <style type="text/css"></style>{" "}
